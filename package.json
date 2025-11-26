@@ -1,5 +1,6 @@
 {
   "name": "wanchain-asset-tracker",
+  "type": "module",
   "version": "1.0.0",
   "description": "wanchain-asset-tracker",
   "main": "index.js",
@@ -8,5 +9,10 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "ethers": "^6.15.0",
+    "iwan-sdk": "^1.4.0"
+  }
 }

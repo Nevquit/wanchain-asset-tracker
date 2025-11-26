@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanchain 资产追踪器</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="input-area">
+            <label for="addressInput">Wanchain/EVM 地址:</label>
+            <input type="text" id="addressInput" placeholder="请输入您的钱包地址">
+            <button id="fetchButton">查询资产</button>
+        </div>
+
+        <header class="summary-header">
+            <span class="total-label">总 USD 价值</span>
+            <span id="total-value" class="total-amount">$0.00</span>
+        </header>
+
+        <section class="asset-section">
+            <h2>钱包资产 (Wallet)</h2>
+            <table id="wallet-table">
+                <thead>
+                    <tr>
+                        <th>资产</th>
+                        <th>数量</th>
+                        <th>合约 / 类型</th>
+                        <th>USD 价值 (待实现)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="4" style="text-align: center;">请先输入地址进行查询</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="asset-section">
+            <h2>DeFi / 质押 (Staking & Farming)</h2>
+            <table id="defi-table">
+                <thead>
+                    <tr>
+                        <th>资产</th>
+                        <th>类型</th>
+                        <th>数量</th>
+                        <th>合约 / 地址</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="4" style="text-align: center;">请先输入地址进行查询</td></tr>
+                </tbody>
+            </table>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
