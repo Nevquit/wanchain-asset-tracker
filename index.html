@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanchain 资产追踪器</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Wanchain 资产追踪器</h1>
+        <p>输入 Wanchain 地址查询所有协议资产</p>
+    </header>
+
+
+    <div class="input-container">
+        <input type="text" id="addressInput" list="addressHistory" placeholder="请输入 0x 开头的 Wanchain 地址">
+        <button id="fetchButton">查询资产</button>
+        <button id="clearHistoryButton" title="清除历史记录">🗑️</button>
+    </div>
+
+    <datalist id="addressHistory"></datalist>
+
+    <div id="loading" style="display: none;">正在查询，请稍候...</div>
+    <div id="error" class="error-message" style="display: none;"></div>
+
+    <div id="resultsContainer" class="results-container">
+        </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
