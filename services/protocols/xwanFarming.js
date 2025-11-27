@@ -77,7 +77,7 @@ export async function getXWANFarmingAssets(userAddr) {
 
     } catch (e) {
         console.error("[ERROR] xWAN Farming scan failed:", e.message);
-        results.push({ asset: "xWAN Farming", type: "状态", amount: "查询失败", contract: "API" });
+        
     }
     return results;
 }

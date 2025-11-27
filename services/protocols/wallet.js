@@ -33,7 +33,7 @@ export async function getWalletAssets(address) {
                     extra: { // 🚨 将 type 和 contract 封装到 extra 对象中
                         DappUrl:wanscanUrl,
                         type: "NativeCoin",  
-                        protocolContract: "" 
+                        protocolContract: "",
                     }
                 })
         );

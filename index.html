@@ -1,32 +1,30 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wanchain 资产追踪器</title>
+    <title>Wanchain Asset Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Wanchain 资产追踪器</h1>
-        <p>输入 Wanchain 地址查询所有协议资产</p>
-    </header>
+    <main class="container">
+        <h1>Wanchain Asset Tracker</h1>
 
-
-    <div class="input-container">
-        <input type="text" id="addressInput" list="addressHistory" placeholder="请输入 0x 开头的 Wanchain 地址">
-        <button id="fetchButton">查询资产</button>
-        <button id="clearHistoryButton" title="清除历史记录">🗑️</button>
-    </div>
-
-    <datalist id="addressHistory"></datalist>
-
-    <div id="loading" style="display: none;">正在查询，请稍候...</div>
-    <div id="error" class="error-message" style="display: none;"></div>
-
-    <div id="resultsContainer" class="results-container">
+        <div class="search-form">
+            <input type="text" id="addressInput" list="addressHistory" placeholder="Enter a Wanchain address to track assets across all protocols.">
+            <datalist id="addressHistory"></datalist>
+            <button id="fetchButton">Query Assets</button>
+            <button id="clearHistoryButton" title="Clear search history">🗑️ Clear History</button>
         </div>
 
-    <script src="script.js"></script>
+        <div id="loading" style="display: none;">Loading assets...</div>
+        <div id="error" style="display: none;"></div>
+
+        <div id="resultsContainer">
+            </div>
+    </main>
+
+    <script type="module" src="main.js"></script>
 </body>
 </html>

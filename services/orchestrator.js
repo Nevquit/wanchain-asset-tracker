@@ -19,19 +19,27 @@ const ASSET_FETCHERS = [
  */
 export async function fetchAllAssets(address) {
     let allAssets = [];
+    let failedProtocols = []; // 🚨 新增失败协议列表
 
-    // Promise.allSettled 确保即使某个协议失败，其他协议也能返回结果
     const results = await Promise.allSettled(
         ASSET_FETCHERS.map(fetcher => fetcher(address))
     );
 
-    results.forEach(result => {
+    results.forEach((result, index) => {
+        const fetcherName = ASSET_FETCHERS[index].name; // 获取协议函数名
+        
         if (result.status === 'fulfilled' && Array.isArray(result.value)) {
             allAssets.push(...result.value);
         } else if (result.status === 'rejected') {
-            console.error("An asset fetcher failed:", result.reason);
+            console.error(`Asset fetcher for ${fetcherName} failed:`, result.reason);
+            // 🚨 记录失败协议的名称
+            failedProtocols.push(fetcherName); 
         }
     });
 
-    return allAssets;
+    // 🚨 返回更丰富的结构
+    return {
+        assets: allAssets,
+        failedProtocols: failedProtocols
+    };
 }

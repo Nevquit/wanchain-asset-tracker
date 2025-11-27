@@ -86,7 +86,7 @@ export async function getStoremanAssets(userAddr) {
 
     } catch (e) {
         console.error("[ERROR] Storeman Delegation check failed:", e.message);
-        return [{ asset: "iWAN/Storeman", type: "状态", amount: "查询失败", contract: "iWAN SDK" }];
+        return null;
     } finally {
         if (apiClient && typeof apiClient.close === 'function') {
             apiClient.close();

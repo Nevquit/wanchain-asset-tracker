@@ -9,6 +9,7 @@
  * @property {object} extra - 协议自定义的元数据对象
  * @property {string} extra.type - (推荐) 资产的类型或状态 (如: '钱包余额', 'Storeman 质押')
  * @property {string} extra.contract - (推荐) 相关的合约地址或协议标识
+ * @property {string} extra.coingeckoId - (推荐) 获取price的id
  */
 
 

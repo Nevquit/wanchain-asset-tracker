@@ -1,7 +1,6 @@
-// api/asset-tracker.js
+// api/asset-tracker.js - Modified to handle partial failure gracefully
 
 import { ethers } from 'ethers';
-// 🚨 导入新的编排器，不再导入具体的 fetcher 函数和旧的 constants
 import { fetchAllAssets } from '../services/orchestrator.js'; 
 
 
@@ -30,18 +29,27 @@ export default async function (req, res) {
         });
     }
     
-    let allAssets = [];
+    // 🚨 变量不再需要预设为 []，因为 orchestrator 现在返回一个对象
+    let results = {}; 
 
     try {
-        // 🚨 核心：一行代码运行所有协议，完全解耦
-        allAssets = await fetchAllAssets(address);
+        // 🚨 核心：获取包含 assets 和 failedProtocols 的对象
+        // results 结构：{ assets: [...], failedProtocols: [...] }
+        results = await fetchAllAssets(address); 
 
-        // 成功，返回 200 OK 和资产数据 (遵循 Vercel 推荐的格式)
-        return res.status(200).json({ status: 200, assets: allAssets });
+        // 成功，返回 200 OK 状态。即使部分协议失败，只要 orchestrator 没抛出异常，
+        // 我们都认为这次 API 调用是成功的（status: 200）。
+
+        return res.status(200).json({ 
+            status: 200, 
+            assets: results.assets,             // 成功获取的资产
+            failed_protocols: results.failedProtocols // 失败的协议列表
+        });
 
     } catch (err) {
         console.error("Overall Query Error:", err.message);
-        // 内部错误，返回 500 Internal Server Error
+        // 只有当 orchestrator 本身抛出异常 (如数据库连接失败，或 Promise.allSettled 之前代码失败)
+        // 才返回 500 Internal Server Error。
         return res.status(500).json({ 
             status: 500,
             error: "An internal server error occurred during asset fetching.", 
