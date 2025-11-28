@@ -1,5 +1,3 @@
-// js/render/DefaultRenderer.js
-
 /**
  * Renders a single asset row (<tr>) for standard table display.
  * @param {Object} asset - 包含资产信息的对象
@@ -15,29 +13,24 @@ function renderAssetRow(asset, formatUSD) {
                               ? formatUSD(usdValue) 
                               : 'N/A (Price Feed Missing)'; 
     
-    // --- 合约地址显示逻辑 (Storeman 修正) ---
+    // --- 合约地址显示逻辑：Wallet 特例 (Token Contract)，其他为 Protocol Contract ---
     let contractAddress = null; 
     let contractPrefix = '';
 
-    // 1. Storeman 逻辑：对于 Storeman，优先且只使用 protocolContract
-    if (DappName && DappName.includes('Storeman') && protocolContract) {
+    // 1. Wallet 特殊配置：显示 Token Contract (asset_ca)
+    if (DappName === 'Wallet' && asset_ca && asset_ca !== "") {
+        contractAddress = asset_ca;
+        contractPrefix = 'Token Contract';
+    }
+    // 2. 所有其他 DApp (包括 Storeman)：显示 Protocol Contract (protocolContract)
+    else if (protocolContract && protocolContract !== "") {
         contractAddress = protocolContract;
         contractPrefix = 'Protocol Contract';
-    } 
-    // 2. 奖励/xWAN 逻辑
+    }
+    // 3. 奖励/xWAN 逻辑 (保持不变，作为回退)
     else if (type === 'xWAN-Pending-Reward' && rewradCa) {
         contractAddress = rewradCa;
         contractPrefix = 'Reward Contract';
-    } 
-    // 3. 钱包/其他代币（默认使用 Token Contract/Asset Contract）
-    else if (asset_ca && asset_ca !== "") {
-        contractAddress = asset_ca;
-        contractPrefix = (DappName === 'Wallet') ? 'Token Contract' : 'Asset Contract';
-    } 
-    // 4. 回退到旧的 protocolContract 字段（以防万一）
-    else if (protocolContract && protocolContract !== "") {
-        contractAddress = protocolContract;
-        contractPrefix = (DappName === 'Wallet') ? 'Token Contract' : 'Protocol Contract';
     }
     
     let contractDisplay = 'N/A';

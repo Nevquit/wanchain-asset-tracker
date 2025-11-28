@@ -37,9 +37,9 @@ function getPriceIdentifier(assetSymbol, contractAddress) {
     }
     
     // 2. Wanchain 主币 (使用 ID: wanchain)
-    if (assetSymbol.toUpperCase() === 'WAN') {
-        return { key: 'wanchain', type: 'id' }; 
-    }
+    // if (assetSymbol.toUpperCase() === 'WAN') {
+    //     return { key: 'wanchain', type: 'id' }; 
+    // }
     
     return null;
 }

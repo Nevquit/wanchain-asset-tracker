@@ -1,19 +1,15 @@
-// js/render/index.js
-
 import { renderDappGroup as renderDefaultDappGroup } from './DefaultRenderer.js';
-import { renderDappGroup as renderStoremanDappGroup } from './StoremanRenderer.js';
+// 🚨 移除了 StoremanRenderer.js 的导入
 
 /**
  * DApp 名称到渲染函数的映射表。
  * 使用 DApp 名称进行精确匹配，或使用关键字（如 'default'）进行回退。
  */
 export const RENDERER_MAP = {
-    // 精确匹配
+    // 明确使用 DefaultRenderer 的 DApps
     'Wallet': renderDefaultDappGroup,
-    // Storeman DApps 
-    'Storeman Delegation': renderStoremanDappGroup,
-    'Storeman Delegation Incentive': renderStoremanDappGroup,
-    // 其他 DApps (回退)
+    
+    // 所有其他 DApps 的回退 (包括 Storeman)
     'default': renderDefaultDappGroup 
 };
 
@@ -37,15 +33,12 @@ export function groupAssetsByDappName(assets) {
  * @returns {Function}
  */
 export function getDappRenderer(dappName) {
-    // 尝试精确匹配
+    // 尝试精确匹配 (目前只有 'Wallet')
     if (RENDERER_MAP[dappName]) {
         return RENDERER_MAP[dappName];
     }
-    // 尝试关键字匹配 (如果 StoremanRenderer 需要处理所有包含 'Storeman' 的 DApp)
-    if (dappName.includes('Storeman')) {
-        return renderStoremanDappGroup;
-    }
-    // 回退到默认
+    
+    // 回退到默认 (Storeman 和所有其他协议 DApp)
     return RENDERER_MAP['default'];
 }
 
