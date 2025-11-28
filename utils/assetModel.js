@@ -4,7 +4,8 @@
 /**
  * @typedef {object} AssetData
  * @property {string} DappName - 资产归属 (如: 'Wallet', 'Storeman', 'Xstake')
- * @property {string} asset - 资产名称/符号 (如: 'WAN', 'USDT', 'Farming')
+ * @property {string} asset - 资产名称/符号 (如: 'WAN', 'USDT')
+ * @property {string} asset_ca - 资产名称/符号 (如: token ca)
  * @property {string} amount - 格式化后的金额字符串 (已应用 formatUnits)
  * @property {object} extra - 协议自定义的元数据对象
  * @property {string} extra.type - (推荐) 资产的类型或状态 (如: '钱包余额', 'Storeman 质押')
@@ -20,7 +21,7 @@
  * @param {object} extra - 协议自定义的元数据对象
  * @returns {AssetData}
  */
-export function createAssetData({ DappName,asset, amount, extra }) {
+export function createAssetData({ DappName,asset,asset_ca, amount, extra }) {
     // 强制类型转换和基本验证
     if (!asset || !amount || typeof extra !== 'object' || extra === null) {
         throw new Error("Invalid asset data provided: Missing required field or 'extra' is not an object.");
@@ -30,6 +31,7 @@ export function createAssetData({ DappName,asset, amount, extra }) {
     return {
         DappName:String(DappName),
         asset: String(asset),
+        asset_ca: String(asset_ca),
         amount: String(amount),
         extra: extra,
     };

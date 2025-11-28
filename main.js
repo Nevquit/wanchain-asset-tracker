@@ -1,7 +1,7 @@
-// main.js - Core Logic and Event Handling (Replaces script.js)
+// main.js - 修复地址切换问题的完整文件
 
-import { getPricesAndCalculateValues } from './js/priceFetcher.js'; // 🚨 路径更新
-import { renderResults } from './js/render.js'; // 🚨 路径更新
+import { getPricesAndCalculateValues } from './js/priceFetcher.js'; 
+import { renderResults } from './js/render.js'; 
 
 const API_ENDPOINT = "/api/asset-tracker";
 
@@ -84,13 +84,16 @@ async function fetchAssets() {
             throw new Error(data.details || data.error || 'The server returned an error.');
         }
 
-        // 核心步骤 1: 调用 PriceFetcher 模块获取价格并计算价值
-        const assetsWithValues = await getPricesAndCalculateValues(data.assets || []);
+        const { assets: assetsWithValues, totalUsdValue } = await getPricesAndCalculateValues(data.assets || []);
         
-        // 核心步骤 2: 调用 Render 模块渲染结果
-        renderResults(assetsWithValues, data.failed_protocols || []); 
+        renderResults(assetsWithValues, data.failed_protocols || [], totalUsdValue, address);
         
+        // 1. 保存地址到历史记录 (这会更新 datalist)
         saveAddress(address); 
+
+        // 2. 🚀 核心修复：查询成功后清空输入框。
+        // 清空输入框后，下次点击时，由于输入为空，浏览器会显示 datalist 中的所有选项。
+        addressInput.value = '';
 
     } catch (e) {
         console.error("Fetch Error:", e);
@@ -99,6 +102,9 @@ async function fetchAssets() {
     } finally {
         loadingIndicator.style.display = 'none';
         fetchButton.disabled = false;
+        
+        // 确保输入框聚焦，方便用户继续操作
+        addressInput.focus();
     }
 }
 
@@ -108,7 +114,6 @@ async function fetchAssets() {
 function init() {
     const saved = getSavedAddresses();
     updateDatalist(saved);
-
     // Bind events
     clearHistoryButton.addEventListener('click', clearAddressHistory);
     fetchButton.addEventListener('click', fetchAssets);

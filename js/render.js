@@ -1,6 +1,13 @@
-// js/render.js
+// js/render.js (主入口)
 
-import { formatUSD } from './priceFetcher.js'; 
+import { formatUSD } from './priceFetcher.js'; // 导入 formatUSD
+import { 
+    groupAssetsByDappName, 
+    getDappRenderer, 
+    renderFailureWarning 
+} from './render/index.js'; // 从新的 index.js 导入核心逻辑
+
+// -------------------- 辅助函数 (保持不变) --------------------
 
 /**
  * Copies text to the clipboard and provides visual feedback.
@@ -26,165 +33,55 @@ window.copyToClipboard = function(text, element) {
 }
 
 
-/**
- * Groups assets by DappName.
- */
-function groupAssetsByDappName(assets) {
-    return assets.reduce((groups, asset) => {
-        const dappName = asset.DappName || 'Unknown Protocol';
-        if (!groups[dappName]) {
-            groups[dappName] = [];
-        }
-        groups[dappName].push(asset);
-        return groups;
-    }, {});
-}
-
-/**
- * Renders a single asset row (<tr>).
- */
-function renderAssetRow(asset) {
-    const { asset: assetSymbol, amount, extra, DappName, usdValue } = asset;
-    const { type, protocolContract, rewradCa } = extra;
-    
-    const USD_VALUE_DISPLAY = formatUSD(usdValue); 
-    
-    let contractAddress = null;
-    let contractPrefix = '';
-
-    if (type === 'xWAN-Pending-Reward' && rewradCa) {
-        contractAddress = rewradCa;
-        contractPrefix = 'Reward Contract';
-    } else if (protocolContract && protocolContract !== "") {
-        contractAddress = protocolContract;
-        contractPrefix = (DappName === 'Wallet') ? 'Token Contract' : 'Protocol Contract';
-    }
-    
-    let contractDisplay = 'N/A';
-    if (contractAddress) {
-        const displayAddress = `${contractPrefix}: ...${contractAddress.slice(-6)}`;
-        contractDisplay = `
-            <span class="contract-copy-cell" 
-                  title="Click to copy contract address"
-                  data-address="${contractAddress}"
-                  onclick="copyToClipboard('${contractAddress}', this)">
-                ${displayAddress} 
-                <span class="copy-icon">📋</span>
-            </span>
-        `;
-    }
-
-    return `
-        <tr class="asset-row type-${type}">
-            <td class="asset-col asset-symbol-col" data-label="Token"> 
-                <div class="token-icon-placeholder"></div>
-                <div class="token-info">
-                    <span class="asset-symbol">${assetSymbol}</span>
-                    <span class="asset-type">${type.split('-').join(' ')}</span>
-                </div>
-            </td>
-            <td class="asset-col asset-amount-col" data-label="Amount"> 
-                <span class="asset-amount">${amount}</span>
-            </td>
-            <td class="asset-col asset-value-col" data-label="USD Value"> 
-                <span class="asset-value ${usdValue === 0 ? 'placeholder-value' : ''}">
-                    ${USD_VALUE_DISPLAY}
-                </span>
-            </td>
-            <td class="asset-col asset-contract-col" data-label="Details/Contract"> 
-                ${contractDisplay}
-            </td>
-        </tr>
-    `;
-}
-
-/**
- * Renders the DApp group container.
- */
-function renderDappGroup(dappName, assets) {
-    if (!assets || assets.length === 0) {
-        return ''; 
-    }
-    
-    const firstAsset = assets[0];
-    const dappUrl = firstAsset && firstAsset.extra ? firstAsset.extra.DappUrl || null : null;
-    const rowsHtml = assets.map(renderAssetRow).join('');
-
-    // 计算当前 DApp 组的总价值
-    const dappTotalValue = assets.reduce((sum, asset) => sum + (asset.usdValue || 0), 0);
-    const totalValueDisplay = formatUSD(dappTotalValue);
-
-    return `
-        <div class="dapp-group">
-            <div class="dapp-header">
-                <h2 class="dapp-name">${dappName} Assets</h2>
-                <div class="header-right-side">
-                    <div class="total-usd-value ${dappTotalValue === 0 ? 'total-placeholder' : ''}">
-                        ${totalValueDisplay}
-                    </div>
-                    ${dappUrl && dappUrl !== "" ? `<a href="${dappUrl}" target="_blank" class="dapp-link">Go to DApp »</a>` : ''}
-                </div>
-            </div>
-
-            <table class="asset-table">
-                <thead>
-                    <tr>
-                        <th class="table-header symbol-header">Token</th>
-                        <th class="table-header amount-header">Amount</th>
-                        <th class="table-header value-header">USD Value</th>
-                        <th class="table-header contract-header">Details/Contract</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${rowsHtml}
-                </tbody>
-            </table>
-        </div>
-    `;
-}
-
-/**
- * Renders a warning message for protocols that failed to fetch.
- */
-function renderFailureWarning(failedProtocols) {
-    if (failedProtocols.length === 0) return '';
-    
-    // 移除函数名前缀（如 "get"），使显示更友好
-    const failedList = failedProtocols.map(name => `<li>${name.replace(/^(get|fetch)/i, '')}</li>`).join('');
-    
-    return `
-        <div class="failure-warning-message">
-            <h3>⚠️ Partial Data Available</h3>
-            <p>The following protocols failed to return asset data. The results displayed below are incomplete.</p>
-            <ul>${failedList}</ul>
-            <p>This is usually due to a temporary API timeout or a RPC error.</p>
-        </div>
-    `;
-}
+// -------------------- 主渲染函数 --------------------
 
 /**
  * Main function to render all results.
  */
-export function renderResults(assets, failedProtocols) {
+export function renderResults(assets, failedProtocols, totalUsdValue, queriedAddress) {
     const resultsContainer = document.getElementById('resultsContainer');
     resultsContainer.innerHTML = '';
     
+    // 1. 渲染总价值和地址
+    if (assets.length > 0) {
+        const totalDiv = document.createElement('div');
+        totalDiv.id = 'totalUsdValue';
+        // 样式保持不变，但内容要加入地址
+        totalDiv.style.cssText = 'font-size: 1.8em; font-weight: bold; margin-bottom: 25px; padding: 15px; border-bottom: 3px solid #007bff; background-color: #f8f9fa; border-radius: 5px; text-align: center;';
+        
+        const formattedTotal = formatUSD(totalUsdValue);
+        totalDiv.innerHTML = `
+            ${queriedAddress ? `<span style="font-size: 0.7em; font-weight: normal; color: #34495e;">Address: </span><span style="font-size: 0.8em; font-weight: bold; color: #555;">${queriedAddress}</span><br><br>` : ''}
+            <span style="font-size: 0.7em; font-weight: normal; color: #6c757d;">Total Portfolio Value:</span>
+            <br>
+            <span style="color: #28a745; font-size: 1.2em;">${formattedTotal}</span>
+        `;
+        resultsContainer.appendChild(totalDiv);
+    }
+    
+    // 2. 渲染失败警告
     const failureHtml = renderFailureWarning(failedProtocols);
     resultsContainer.innerHTML += failureHtml;
-
-    if (assets.length === 0) {
-        if (failedProtocols.length === 0) {
-            resultsContainer.innerHTML += '<p style="text-align: center; color: #7F8C8D; margin-top: 30px;">No assets found for this address across all protocols.</p>';
-        }
+    // ... (其余逻辑保持不变)
+    
+    if (assets.length === 0 && failedProtocols.length === 0) {
+        resultsContainer.innerHTML += '<p style="text-align: center; color: #7F8C8D; margin-top: 30px;">No assets found for this address across all protocols.</p>';
         return;
     }
 
+    // 3. 渲染资产分组 (使用调度器)
     const groupedAssets = groupAssetsByDappName(assets);
     
     let htmlContent = '';
     for (const dappName in groupedAssets) {
-        htmlContent += renderDappGroup(dappName, groupedAssets[dappName]);
+        const renderer = getDappRenderer(dappName);
+        htmlContent += renderer(dappName, groupedAssets[dappName], formatUSD);
     }
     
-    resultsContainer.innerHTML += htmlContent;
+    // 将 DApp 组内容添加到容器
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent;
+    while (tempDiv.firstChild) {
+        resultsContainer.appendChild(tempDiv.firstChild);
+    }
 }

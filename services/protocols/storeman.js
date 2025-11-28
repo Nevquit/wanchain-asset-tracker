@@ -60,6 +60,7 @@ export async function getStoremanAssets(userAddr) {
             results.push(createAssetData({
                 DappName: Dapp,
                 asset: "WAN", 
+                asset_ca: "0x0000000000000000000000000000000000000000", 
                 amount: formatUnits(totalDeposit, DECIMALS), 
                 extra: { // 🚨 将 type 和 contract 封装到 extra 对象中
                     DappUrl:"",
@@ -73,6 +74,7 @@ export async function getStoremanAssets(userAddr) {
             results.push(createAssetData({
                 DappName: Dapp,
                 asset: "WAN", 
+                asset_ca: "0x0000000000000000000000000000000000000000", 
                 amount: formatUnits(totalIncentive, DECIMALS), 
                 extra: { // 🚨 将 type 和 contract 封装到 extra 对象中
                     DappUrl:"",

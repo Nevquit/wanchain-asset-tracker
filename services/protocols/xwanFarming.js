@@ -17,10 +17,10 @@ const XWAN_FARMING_ABI = [
 // 注意：BTC, ETH, USDT, USDC 地址需要从 wallet.js 的配置中复制过来，或者在 wallet.js 中将配置导出。
 // 为了保持 xwanFarming.js 的自治性，我们将奖励代币的地址也在这里定义。
 const REWARD_TOKENS = {
-    BTC: { addr: "0x50c439B6d602297252505a6799d84eA5928bCFb6", decimals: 8 }, 
-    ETH: { addr: "0xE3aE74D1518A76715aB4C7BeDF1af73893cd435A", decimals: 18 }, 
-    USDT: { addr: "0x11e77E27Af5539872efEd10abaA0b408cfd9fBBD", decimals: 6 }, 
-    USDC: { addr: "0x52A9CEA01c4CBDd669883e41758B8eB8e8E2B34b", decimals: 6 }, 
+    wanBTC: { addr: "0x50c439B6d602297252505a6799d84eA5928bCFb6", decimals: 8 }, 
+    wanETH: { addr: "0xE3aE74D1518A76715aB4C7BeDF1af73893cd435A", decimals: 18 }, 
+    wanUSDT: { addr: "0x11e77E27Af5539872efEd10abaA0b408cfd9fBBD", decimals: 6 }, 
+    wanUSDC: { addr: "0x52A9CEA01c4CBDd669883e41758B8eB8e8E2B34b", decimals: 6 }, 
 };
 
 /**
@@ -42,6 +42,7 @@ export async function getXWANFarmingAssets(userAddr) {
             results.push(createAssetData({
                 DappName: Dapp,  
                 asset: "WAN", 
+                asset_ca: "0x0000000000000000000000000000000000000000", 
                 amount: formatUnits(info.amount, 18), 
                 extra: { // 🚨 将 type 和 contract 封装到 extra 对象中
                     DappUrl:"https://xstake.wanchain.org/stakexwan",
@@ -63,6 +64,7 @@ export async function getXWANFarmingAssets(userAddr) {
                 results.push(createAssetData({
                     DappName: Dapp,  
                     asset: rewardSymbol, 
+                    asset_ca: rewardTokenAddr, 
                     amount: formatUnits(pending, rewardDecimals), 
                     extra: { // 🚨 将 type 和 contract 封装到 extra 对象中
                         DappUrl:"https://xstake.wanchain.org/stakexwan",

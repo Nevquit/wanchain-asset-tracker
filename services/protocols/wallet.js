@@ -29,6 +29,7 @@ export async function getWalletAssets(address) {
                 createAssetData({
                     DappName: Dapp,
                     asset: "WAN", 
+                    asset_ca: "0x0000000000000000000000000000000000000000", 
                     amount: formatUnits(wanBalance), 
                     extra: { // 🚨 将 type 和 contract 封装到 extra 对象中
                         DappUrl:wanscanUrl,
@@ -69,6 +70,7 @@ async function fetchTokenBalance(symbol, contractAddr, userAddr) {
             return createAssetData({
                 DappName: Dapp,
                 asset: tokenSymbol, 
+                asset_ca:contractAddr,
                 amount: formatUnits(bal, decimals), 
                 extra: { // 🚨 将 type 和 contract 封装到 extra 对象中
                     DappUrl:wanscanUrl,
