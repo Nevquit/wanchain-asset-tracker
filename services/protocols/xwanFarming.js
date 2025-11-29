@@ -56,9 +56,9 @@ export async function getXWANFarmingAssets(userAddr) {
         for (const rewardSymbol in REWARD_TOKENS) {
             const { addr: rewardTokenAddr, decimals: rewardDecimals } = REWARD_TOKENS[rewardSymbol];
             if (!ethers.isAddress(rewardTokenAddr)) continue;
-            console.log("rewardTokenAddr",rewardTokenAddr)
             const pending = await mcContract.pendingReward(userAddr, rewardTokenAddr);
-            
+            console.log("xfarming_rewardTokenAddr",rewardTokenAddr,rewardSymbol,pending)
+
             if (pending > 0n) {
                 // ... (其余逻辑不变)
                 results.push(createAssetData({
