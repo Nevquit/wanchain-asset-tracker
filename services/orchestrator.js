@@ -5,6 +5,8 @@ import { getWalletAssets } from './protocols/wallet.js';
 import { getXWANFarmingAssets } from './protocols/xwanFarming.js';
 import { getStoremanAssets } from './protocols/storeman.js';
 import { getPoSAssets } from './protocols/pos.js';
+import { getXFLowsAssets } from './protocols/xflows.js';
+
 
 // 🚨 核心：协议列表 (新增协议只需在这里添加)
 const ASSET_FETCHERS = [
@@ -12,6 +14,7 @@ const ASSET_FETCHERS = [
     getXWANFarmingAssets,
     getStoremanAssets,
     getPoSAssets,
+    getXFLowsAssets,
 ];
 
 /**

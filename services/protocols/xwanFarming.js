@@ -1,27 +1,45 @@
-// services/protocols/xwanFarming.js
-
 import { ethers, Contract } from 'ethers';
+// 假设 PROVIDER, ERC20_ABI 在 shared.js 中
 import { PROVIDER, ERC20_ABI } from '../../config/shared.js';
 import { formatUnits } from '../../utils/helpers.js';
 import { createAssetData } from '../../utils/assetModel.js';
+
 const Dapp = "xStake";
-// 🚨 协议自治配置：xWAN Farming 合约地址和 ABI
-const MASTER_CHEF_ADDR = "0x3167219355f3532B8B37e24213118A0898AdcdFB";
+
+// 🚨 协议配置：xWAN Farming 的所有 Pool 配置
+// 合并了 MasterChef 地址、质押代币地址和精度
+const FARMING_POOLS = {
+    // key: 质押代币符号 | value: { mcAddr: MasterChef地址, tokenAddr: 质押代币地址, decimals: 精度 }
+    wanBTC: { 
+        mcAddr: "0x9E2C89d3b48ecB0761764D6a17594dA74f20f3Bb", 
+        tokenAddr: "0x50c439B6d602297252505a6799d84eA5928bCFb6", 
+        decimals: 8 
+    }, 
+    wanETH: { 
+        mcAddr: "0xaeC46cd03C3489EF8C2061E66D3d57FA0171387D", 
+        tokenAddr: "0xE3aE74D1518A76715aB4C7BeDF1af73893cd435A", 
+        decimals: 18 
+    }, 
+    wanUSDT: { 
+        mcAddr: "0x3167219355f3532B8B37e24213118A0898AdcdFB", 
+        tokenAddr: "0x11e77E27Af5539872efEd10abaA0b408cfd9fBBD", 
+        decimals: 6 
+    }, 
+    wanUSDC: { 
+        mcAddr: "0x47047A990523F08743245160BD07dEcC442efA9C", 
+        tokenAddr: "0x52A9CEA01c4CBDd669883e41758B8eB8e8E2B34b", 
+        decimals: 6 
+    }, 
+};
 
 const XWAN_FARMING_ABI = [
+    // 假设 ABI 是统一的，查询质押金额和待领取奖励
     "function userInfo(address) view returns (uint256 amount, uint256 lastUpdateTime)",
-    "function pendingReward(address _user, address _rewardToken) view returns (uint256)"
+    "function pendingReward(address _user, address _rewardToken) view returns (uint256)",
 ];
 
-// 🚨 协议自治配置：xWAN Farming 奖励代币配置 (地址和精度)
-// 注意：BTC, ETH, USDT, USDC 地址需要从 wallet.js 的配置中复制过来，或者在 wallet.js 中将配置导出。
-// 为了保持 xwanFarming.js 的自治性，我们将奖励代币的地址也在这里定义。
-const REWARD_TOKENS = {
-    wanBTC: { addr: "0x50c439B6d602297252505a6799d84eA5928bCFb6", decimals: 8 }, 
-    wanETH: { addr: "0xE3aE74D1518A76715aB4C7BeDF1af73893cd435A", decimals: 18 }, 
-    wanUSDT: { addr: "0x11e77E27Af5539872efEd10abaA0b408cfd9fBBD", decimals: 6 }, 
-    wanUSDC: { addr: "0x52A9CEA01c4CBDd669883e41758B8eB8e8E2B34b", decimals: 6 }, 
-};
+// 🚨 奖励代币符号列表已移除，因为现在每个池子只检查一个奖励代币。
+// const REWARD_TOKEN_SYMBOLS = Object.keys(FARMING_POOLS); // 移除此行
 
 /**
  * 核心函数：查询 xWAN Farming 质押和奖励
@@ -31,55 +49,69 @@ const REWARD_TOKENS = {
 export async function getXWANFarmingAssets(userAddr) {
     const results = [];
 
-    try {
-        const mcContract = new Contract(MASTER_CHEF_ADDR, XWAN_FARMING_ABI, PROVIDER);
-
-        // 1. 查询用户质押的金额
-        const info = await mcContract.userInfo(userAddr);
+    // 遍历所有 Farming Pool
+    for (const stakedSymbol in FARMING_POOLS) {
+        const pool = FARMING_POOLS[stakedSymbol];
+        const mcAddr = pool.mcAddr;
+        const tokenAddr = pool.tokenAddr;
+        const decimals = pool.decimals;
         
-        if (info.amount > 0n) {
-            // ... (其余逻辑不变)
-            results.push(createAssetData({
-                DappName: Dapp,  
-                asset: "WAN", 
-                asset_ca: "0x0000000000000000000000000000000000000000", 
-                amount: formatUnits(info.amount, 18), 
-                extra: { // 🚨 将 type 和 contract 封装到 extra 对象中
-                    DappUrl:"https://xstake.wanchain.org/stakexwan",
-                    type: "xWAN-Stake", 
-                    protocolContract: MASTER_CHEF_ADDR,
+        if (!ethers.isAddress(mcAddr) || !tokenAddr) continue;
+
+        try {
+            const mcContract = new Contract(mcAddr, XWAN_FARMING_ABI, PROVIDER);
+
+            // 1. 查询用户在当前 Pool 中质押的金额 (Staked Token)
+            const info = await mcContract.userInfo(userAddr);
+            const stakedAmount = info.amount;
+            
+            if (stakedAmount > 0n) {
+                // 质押资产记录
+                results.push(createAssetData({
+                    DappName: Dapp,  
+                    asset: stakedSymbol, // 例如 wanBTC
+                    asset_ca: tokenAddr, 
+                    amount: formatUnits(stakedAmount, decimals), 
+                    extra: { 
+                        DappUrl: "https://xstake.wanchain.org/stakexwan",
+                        type: `xWAN-Stake (${stakedSymbol} Pool)`, // 包含池子名称
+                        protocolContract: mcAddr,
+                        stakedAssetCA: tokenAddr,
                     } 
-            }));
-        }
-        
-        // 2. 循环查询待领取的奖励
-        for (const rewardSymbol in REWARD_TOKENS) {
-            const { addr: rewardTokenAddr, decimals: rewardDecimals } = REWARD_TOKENS[rewardSymbol];
-            if (!ethers.isAddress(rewardTokenAddr)) continue;
-            const pending = await mcContract.pendingReward(userAddr, rewardTokenAddr);
-            console.log("xfarming_rewardTokenAddr",rewardTokenAddr,rewardSymbol,pending)
+                }));
+            }
+            
+            // 2. 查询待领取的奖励 (Pending Rewards)
+            // 🚨 逻辑更新：只查询当前池子配置的代币作为奖励代币 (假设奖励代币就是质押代币)
+            const rewardSymbol = stakedSymbol; 
+            const rewardTokenAddr = tokenAddr; 
+            const rewardDecimals = decimals;
 
+            if (!ethers.isAddress(rewardTokenAddr)) continue;
+
+            // 查询待领取奖励
+            const pending = await mcContract.pendingReward(userAddr, rewardTokenAddr);
+            
             if (pending > 0n) {
-                // ... (其余逻辑不变)
+                // 奖励资产记录
                 results.push(createAssetData({
                     DappName: Dapp,  
                     asset: rewardSymbol, 
                     asset_ca: rewardTokenAddr, 
                     amount: formatUnits(pending, rewardDecimals), 
-                    extra: { // 🚨 将 type 和 contract 封装到 extra 对象中
-                        DappUrl:"https://xstake.wanchain.org/stakexwan",
-                        protocolContract: MASTER_CHEF_ADDR,
-                        type: "xWAN-Pending-Reward", 
-                        rewradCa:rewardTokenAddr
-
+                    extra: { 
+                        DappUrl: "https://xstake.wanchain.org/stakexwan",
+                        protocolContract: mcAddr,
+                        type: `xWAN-Pending-Reward (${stakedSymbol} Pool)`, // 包含池子和奖励代币
+                        rewardCa: rewardTokenAddr
                     } 
                 }));
             }
-        }
 
-    } catch (e) {
-        console.error("[ERROR] xWAN Farming scan failed:", e.message);
-        
+        } catch (e) {
+            console.error(`[ERROR] xWAN Farming scan failed for ${stakedSymbol} pool:`, e.message);
+        }
     }
+    
     return results;
 }
