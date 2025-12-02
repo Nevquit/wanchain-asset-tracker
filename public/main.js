@@ -1,6 +1,6 @@
 // main.js - 修复地址切换问题的完整文件
 
-import { getPricesAndCalculateValues } from '/js/priceFetcher.js'; 
+import { getPricesAndCalculateValues } from '/js/priceFetch/priceFetcher.js'; 
 import { renderResults } from '/js/render.js'; 
 
 const API_ENDPOINT = "/api/asset-tracker";

@@ -1,15 +1,17 @@
+//index.js
 import { renderDappGroup as renderDefaultDappGroup } from './DefaultRenderer.js';
-// 🚨 移除了 StoremanRenderer.js 的导入
+import { renderDappGroup as renderXFLowsDappGroup } from './xFLowsRenderer.js'; // 🚨 导入新的 xFLows 渲染器
 
 /**
  * DApp 名称到渲染函数的映射表。
  * 使用 DApp 名称进行精确匹配，或使用关键字（如 'default'）进行回退。
  */
 export const RENDERER_MAP = {
-    // 明确使用 DefaultRenderer 的 DApps
+    // 明确使用特定渲染器的 DApps
     'Wallet': renderDefaultDappGroup,
+    'xFLows': renderXFLowsDappGroup, // 🚨 为 'xFLows' 协议指定渲染器
     
-    // 所有其他 DApps 的回退 (包括 Storeman)
+    // 所有其他 DApps 的回退
     'default': renderDefaultDappGroup 
 };
 
@@ -33,12 +35,12 @@ export function groupAssetsByDappName(assets) {
  * @returns {Function}
  */
 export function getDappRenderer(dappName) {
-    // 尝试精确匹配 (目前只有 'Wallet')
+    // 尝试精确匹配
     if (RENDERER_MAP[dappName]) {
         return RENDERER_MAP[dappName];
     }
     
-    // 回退到默认 (Storeman 和所有其他协议 DApp)
+    // 回退到默认
     return RENDERER_MAP['default'];
 }
 

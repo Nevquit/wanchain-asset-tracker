@@ -1,6 +1,6 @@
 // js/render.js (主入口)
 
-import { formatUSD } from './priceFetcher.js'; // 导入 formatUSD
+import { formatUSD } from './priceFetch/utils.js'; // 导入 formatUSD
 import { 
     groupAssetsByDappName, 
     getDappRenderer, 

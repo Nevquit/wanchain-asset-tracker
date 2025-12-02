@@ -7,5 +7,9 @@ export const COINGECKO_TOKEN_MAP = {
     "0x50c439b6d602297252505a6799d84ea5928bcfb6": { symbol: "wanBTC", coingeckoId: "bitcoin" },
     "0x2ea407aa69be7367bf231e76b51fab9ec436766c": { symbol: "XWAN", coingeckoId: "wanchain" },
     "0x0000000000000000000000000000000000000000":{ symbol: "WAN", coingeckoId: "wanchain" },
+    "0xdabd997ae5e4799be47d6e69d9431615cba28f48":{ symbol: "WWAN", coingeckoId: "wanchain" },
+    "0x79d745178bc271a1f29f8fbe9251dfc512db842c":{ symbol: "wanADA", coingeckoId: "cardano" },
+
+
 };
 export const COINGECKO_ID_API = 'https://api.coingecko.com/api/v3/simple/price';
