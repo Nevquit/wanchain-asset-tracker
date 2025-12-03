@@ -2,7 +2,7 @@
 
 // 🚨 导入所有协议模块的入口函数
 import { getWalletAssets } from './protocols/wallet.js';
-import { getXWANFarmingAssets } from './protocols/xwanFarming.js';
+import { getXWANFarmingAssets } from './protocols/xStake-xWANFarming.js';
 import { getStoremanAssets } from './protocols/storeman.js';
 import { getPoSAssets } from './protocols/pos.js';
 import { getXFLowsAssets } from './protocols/xflows.js';

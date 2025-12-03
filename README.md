@@ -1,57 +1,93 @@
-WANCHAIN 资产追踪器 (WANCHAIN-ASSET-TRACKER)
+## ✨ WANCHAIN-ASSET-TRACKER 项目结构与分析
 
-本项目是一个资产追踪器应用，旨在通过一个统一接口查询用户在 Wanchain 生态中，包括钱包余额和各种 DeFi 协议中的资产。
+本项目是一个资产追踪器，最初采用纯 JavaScript/Serverless 架构，后重构为基于 React 的结构。
 
-项目结构概览
+### 原始项目结构 (纯 JS / Serverless)
 
-WANCHAIN-ASSET-TRACKER/
-├── api/                             # 【后端服务入口】Vercel Serverless Function 的部署入口
-│   └── asset-tracker.js             #    - 主要 API 入口：接收前端请求，调度 services/ 中的核心逻辑。
-├── config/                          # 【共享配置】存放项目共享的配置信息
-│   └── shared.js                    #    - 跨后端和前端的通用配置（如 RPC Provider 地址）。
-├── public/                          # 【前端静态资源】Web 服务器根目录
-│   ├── images/                      #    - 存放图片资源（如 favicon.png）。
-│   ├── js/                          #    - 存放前端特定的 JavaScript 模块。
-│   │   ├── render/                  #       - 资产渲染逻辑子模块。
-│   │   │   ├── DefaultRenderer.js   #          - 默认渲染器：用于通用表格展示。
-│   │   │   └── index.js             #          - 渲染器分发器：根据 DApp 名称选择渲染函数。
-│   │   ├── config.js                #       - 前端界面配置或运行时配置,目前主要配置了价格获取的配置数据。
-│   │   ├── priceFetcher.js          #       - 负责获取资产的实时价格数据。
-│   │   └── render.js                #       - 主要的渲染调度模块。
-│   ├── index.html                   #    - 应用程序的入口 HTML 文件。
-│   ├── main.js                      #    - 前端主逻辑入口，处理用户交互和 API 调用。
-│   └── style.css                    #    - 应用程序的样式表。
-├── services/                        # 【核心业务逻辑】存放核心后端业务逻辑，被 api/ 调用
-│   ├── protocols/                   #    - 包含针对每个具体 DApp 协议的资产查询逻辑。
-│   │   ├── pos.js                   #       - Wanchain PoS 委托/质押资产查询。
-│   │   ├── storeman.js              #       - Storeman 锁仓资产查询逻辑。
-│   │   ├── wallet.js                #       - 标准 ERC20/原生代币余额查询逻辑。
-│   │   ├── xflows.js                #       - xFLows (Uniswap V3) 流动性头寸和费用查询。
-│   │   ├── xwanFarming.js           #       - xWAN 农场质押和奖励资产查询。
-│   │── orchestrator.js          #       - 服务编排器：协调并并行调用所有协议扫描函数。
-│   └── test/                        #    - 服务层的测试文件夹。
-│       └── test-iwan.js             #       - iWAN SDK 接口的测试或示例文件。
-├── utils/                           # 【工具函数】存放可重用的工具函数和数据模型定义
-│   ├── assetModel.js                #    - 定义资产数据 (AssetData) 的标准结构。
-│   └── helpers.js                   #    - 通用辅助函数，如单位格式化 (formatUnits)。
-├── .env                             # 环境变量配置文件（本地开发使用）。
-├── .gitignore                       # Git 忽略文件。
-├── .vercel                           # Vercel 部署和配置相关文件。
-└── (其他文件，如 package.json, README.md, node_modules 等)
+这是项目当前的文件组织，它使用了 Vercel Serverless Functions (`api`) 和客户端原生 JS (`public/js`)：
 
+```
+WANCHAIN-ASSET-TRACKER
+├── .vercel
+├── api
+│   └── asset-tracker.js      <- Serverless API 入口，处理后端逻辑
+├── config
+│   └── shared.js             <- 后端配置，可能包含前后端共享的常量
+├── node_modules
+├── public                    <- 静态资源目录
+│   ├── images
+│   ├── favicon.png
+│   ├── logo.svg
+│   └── js                    <- 客户端 JavaScript 逻辑
+│       ├── priceFetch         <- 价格数据获取模块
+│       ├── render             <- UI 渲染器模块 (WalletRenderer, xFlowsRenderer 等)
+│       └── render.js          <- 渲染协调入口
+├── index.html                <- 客户端入口文件
+├── main.js                   <- 客户端主逻辑入口
+├── services                  <- 核心业务逻辑（与 Wanchain 协议交互）
+│   └── protocols
+│       ├── pos.js             <- Proof-of-Stake 协议交互
+│       ├── storeman.js        <- Storeman 跨链协议交互
+│       ├── wallet.js          <- 钱包余额/交易查询
+│       ├── xflows.js          <- 跨链 Flows 逻辑
+│       ├── xStake-xWANFarming.js <- 专用质押/挖矿逻辑
+│       └── orchestrator.js    <- 协议服务调度器
+├── test
+│   └── test-iwan.js          <- iWAN 相关的测试文件
+├── utils
+│   ├── assetModel.js
+│   └── helpers.js
+├── .env                      <- 环境变量（用于存储敏感信息）
+└── package.json
+```
 
-关键工作流 (Key Workflow)
+-----
 
-用户操作：用户在 public/index.html 界面输入地址并点击查询。
+### ⚛️ 重构目标结构 (React Framework)
 
-前端调用：public/main.js 调用 Vercel Serverless Function 入口 /api/asset-tracker.js。
+为了提高可维护性和模块化，我们将项目重构为标准的 React 单页应用 (SPA) 结构。
 
-后端调度：/api/asset-tracker.js 导入并调用 services/protocols/orchestrator.js。
+  * **目标**: 分离关注点，使用组件 (`components`) 和自定义 Hooks (`hooks`) 管理 UI 和状态。
+  * **部署**: 此结构依然完全兼容 **Vercel** 部署。
 
-协议扫描：orchestrator.js 调用所有协议文件（如 pos.js, xflows.js）来获取数据。
+<!-- end list -->
 
-数据返回：聚合后的数据返回给前端。
+```
+WANCHAIN-ASSET-TRACKER
+├── .vercel
+├── api
+│   └── asset-tracker.js      <- 后端 Serverless API（保持不变）
+├── node_modules
+├── public                    <- 静态资源（保持不变）
+│   └── index.html            <- React 应用的挂载点
+├── src                       <- 核心源码目录
+│   ├── components            <- 纯 React UI 组件（替代 Renderer）
+│   │   ├── WalletCard.jsx     <- 钱包视图
+│   │   ├── XFlowsTable.jsx    <- 跨链视图
+│   │   └── AssetRow.jsx       <- 基础资产展示
+│   ├── hooks                 <- 自定义 Hooks（封装数据和状态逻辑）
+│   │   ├── useAssetPrices.js  <- 封装价格获取逻辑
+│   │   └── useProtocolData.js <- 封装协议服务调用逻辑
+│   ├── services              <- 业务逻辑抽象层
+│   │   └── protocols          <- 与 Wanchain 协议交互的纯 JS 模块（保持不变）
+│   ├── utils                 <- 辅助工具和配置
+│   │   └── config
+│   │       └── shared.js      <- 共享配置
+│   ├── pages                 <- 顶级路由视图
+│   │   └── Dashboard.jsx      <- 资产追踪器主页面
+│   ├── App.jsx               <- 主应用组件（路由配置）
+│   └── index.js              <- React 启动入口
+└── package.json
+```
 
-价格获取：public/js/priceFetcher.js 确保资产价格可用。
+### 关键职能概述
 
-前端渲染：public/main.js 使用 public/js/render/index.js 中定义的渲染器将数据显示在界面上。
+| 目录/文件 | 原始职能 | React 职能 |
+| :--- | :--- | :--- |
+| **`api/asset-tracker.js`** | 资产数据聚合的 API 端点。 | 保持不变，作为 Serverless 后端。 |
+| **`services/protocols/`** | 封装 Wanchain 区块链交互逻辑。 | 保持不变，作为被 Hooks 调用的**数据服务层**。 |
+| **`public/js/render/`** | 客户端 UI 渲染逻辑。 | 转换为 **`src/components/`**，仅负责 UI 展示。 |
+| **`public/js/priceFetch/`** | 客户端价格获取逻辑。 | 转换为 **`src/hooks/useAssetPrices.js`**，负责获取和管理价格状态。 |
+| **`main.js`** | JS 入口。 | 转换为 **`src/index.js`**。 |
+
+您可以直接将上述 Markdown 内容粘贴到您的 `README.md` 文件中。
