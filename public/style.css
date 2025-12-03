@@ -1,109 +1,79 @@
 /* ==================================== */
-/* 0. Variables and Base Styles */
+/* 0. Variables and Base Styles (Refined) */
 /* ==================================== */
 
 :root {
     /* Colors */
-    --color-primary: #3498db;          /* Soft Blue */
-    --color-primary-dark: #2980b9;     /* Darker Blue */
-    --color-accent: #f39c12;           /* Orange/Yellow for emphasis */
-    --background-light: #ecf0f1;       /* Light Gray background */
+    --color-primary: #4f46e5;           /* Indigo-600 (Wanchain-like Blue/Purple) */
+    --color-primary-dark: #4338ca;      /* Indigo-700 */
+    --color-accent: #f59e0b;            /* Amber-500 for secondary action */
+    --background-light: #f9fafb;        /* Very Light Gray background (Gray-50) */
     --background-card: #ffffff;
-    --border-color: #e0e6ed;           /* Light border */
-    --text-dark: #2c3e50;              /* Dark text */
-    --text-muted: #7f8c8d;             /* Muted gray text */
-    --success-color: #2ecc71;          /* Green for success */
-    --warning-background: #fffbe6;     /* Light yellow for warnings */
-    --warning-border: #ffeb3b;         /* Yellow border */
-    --warning-text: #e6a23c;           /* Darker yellow text */
-    --error-background: #fde8ec;      /* Light red for errors */
-    --error-border: #f56c6c;           /* Red border */
-    --error-text: #f56c6c;             /* Red text */
+    --border-color: #e5e7eb;            /* Light border (Gray-200) */
+    --text-dark: #1f2937;               /* Dark text (Gray-900) */
+    --text-muted: #6b7280;              /* Muted gray text (Gray-500) */
+    --success-color: #10b981;           /* Emerald-500 (Green for value) */
+    --error-color: #ef4444;             /* Red-500 */
+    --info-color: #3b82f6;              /* Blue-500 for info/missing data */
 
     /* Typography */
     --font-heading: 'Poppins', sans-serif;
     --font-body: 'Roboto', sans-serif;
-    --font-monospace: 'Roboto Mono', monospace; /* For numbers/addresses */
+    --font-monospace: 'Roboto Mono', monospace; 
 
     /* Spacing and Radius */
-    --spacing-xxl: 60px;
-    --spacing-xl: 40px;
-    --spacing-large: 30px;
-    --spacing-medium: 20px;
-    --spacing-small: 10px;
-    --radius-large: 12px;
-    --radius-medium: 8px;
+    --spacing-xs: 4px;
+    --spacing-small: 8px;
+    --spacing-medium: 16px;
+    --spacing-large: 24px;
+    --spacing-xl: 32px;
+
     --radius-small: 4px;
+    --radius-medium: 8px;
+    --radius-large: 12px;
 
     /* Shadows */
-    --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.08);
-    --shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.12);
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-* {
-    box-sizing: border-box;
+body {
+    background-color: var(--background-light);
+    color: var(--text-dark);
+    font-family: var(--font-body);
+    line-height: 1.6;
     margin: 0;
     padding: 0;
 }
 
-body {
-    font-family: var(--font-body);
-    background-color: var(--background-light);
-    color: var(--text-dark);
-    line-height: 1.6;
-    padding: var(--spacing-xl) var(--spacing-medium); /* More padding overall */
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Align to top */
-}
+/* ==================================== */
+/* 1. Global Layout & Typography */
+/* ==================================== */
 
-main.container {
-    max-width: 1000px; /* Slightly narrower for focus */
-    width: 100%;
-    margin: var(--spacing-large) auto;
-    background-color: transparent; /* Main container background matches body */
+.container {
+    max-width: 1280px;
+    margin: var(--spacing-xl) auto;
+    padding: 0 var(--spacing-medium);
 }
 
 h1 {
     font-family: var(--font-heading);
-    text-align: center;
-    color: var(--color-primary-dark);
-    margin-bottom: var(--spacing-xl);
-    font-size: 2.8em;
+    font-size: 2.5em;
     font-weight: 600;
-}
-
-h2 {
-    font-family: var(--font-heading);
-    font-weight: 500;
-}
-
-a {
-    color: var(--color-primary);
-    text-decoration: none;
-    transition: color 0.2s ease, transform 0.2s ease;
-}
-
-a:hover {
     color: var(--color-primary-dark);
-    transform: translateY(-1px);
+    text-align: center;
+    margin-bottom: var(--spacing-large);
 }
 
 /* ==================================== */
-/* 1. Search Form */
+/* 2. Input and Buttons */
 /* ==================================== */
 
 .search-form {
-    background-color: var(--background-card);
-    padding: var(--spacing-medium);
-    border-radius: var(--radius-large);
-    box-shadow: var(--shadow-light);
-    margin-bottom: var(--spacing-xl);
     display: flex;
-    flex-wrap: wrap; /* Allow wrapping on small screens */
+    gap: var(--spacing-medium);
+    margin-bottom: var(--spacing-xl);
     align-items: center;
-    gap: var(--spacing-small); /* Consistent gap */
 }
 
 #addressInput {
@@ -112,136 +82,120 @@ a:hover {
     border: 1px solid var(--border-color);
     border-radius: var(--radius-medium);
     font-size: 1em;
-    min-width: 250px;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
     font-family: var(--font-body);
-}
-
-#addressInput:focus {
-    outline: none;
-    border-color: var(--color-primary);
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2); /* Soft focus ring */
 }
 
 .search-form button {
     padding: var(--spacing-small) var(--spacing-medium);
+    border-radius: var(--radius-medium);
+    font-size: 1em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s, box-shadow 0.2s;
+    white-space: nowrap; /* Prevent button text from wrapping */
+}
+
+#fetchButton {
     background-color: var(--color-primary);
     color: white;
     border: none;
-    border-radius: var(--radius-medium);
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: 500;
-    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-    flex-shrink: 0; /* Prevent buttons from shrinking */
 }
 
-.search-form button:hover:not(:disabled) {
+#fetchButton:hover {
     background-color: var(--color-primary-dark);
-    transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.search-form button:disabled {
-    background-color: var(--text-muted);
-    cursor: not-allowed;
-    opacity: 0.8;
+    box-shadow: var(--shadow-sm);
 }
 
 #clearHistoryButton {
-    background: none; /* Make it look like a text link */
-    color: var(--text-muted);
-    padding: 0 var(--spacing-small); /* Less padding to look like text */
-    margin-left: var(--spacing-small); /* Add some space from other buttons */
-    font-size: 0.9em;
+    background-color: var(--color-accent);
+    color: white;
+    border: none;
+    padding: var(--spacing-small); /* Smaller padding for icon button */
+    font-size: 1.2em;
 }
 
 #clearHistoryButton:hover {
-    color: var(--text-dark);
-    background-color: rgba(0, 0, 0, 0.05); /* Light hover background */
-    border-radius: var(--radius-small);
+    background-color: #d97706; /* Amber-700 */
 }
 
-/* ==================================== */
-/* 2. Status and Error Display */
-/* ==================================== */
+/* Status Messages */
+#loading, #error, .warning-box {
+    margin: var(--spacing-medium) 0;
+    padding: var(--spacing-medium);
+    border-radius: var(--radius-medium);
+    text-align: center;
+    font-weight: 500;
+}
 
 #loading {
-    text-align: center;
-    color: var(--color-primary);
-    font-size: 1.2em;
-    margin: var(--spacing-medium) 0;
-    padding: var(--spacing-small);
-    background-color: rgba(52, 152, 219, 0.1); /* Light blue background */
-    border-radius: var(--radius-medium);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background-color: #eff6ff; /* Blue-50 */
+    color: #2563eb; /* Blue-600 */
+    border: 1px solid #bfdbfe; /* Blue-200 */
 }
 
-/* Simple spinner for loading */
-#loading::before {
-    content: '';
-    border: 3px solid rgba(52, 152, 219, 0.3);
-    border-top: 3px solid var(--color-primary);
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    animation: spin 1s linear infinite;
-    margin-right: var(--spacing-small);
+#error, .warning-box {
+    background-color: #fee2e2; /* Red-100 */
+    color: var(--error-color);
+    border: 1px solid #fca5a5; /* Red-300 */
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.warning-box {
+    text-align: left;
 }
-
-
-#error {
-    background-color: var(--error-background);
-    color: var(--error-text);
-    padding: var(--spacing-medium);
-    border: 1px solid var(--error-border);
-    border-radius: var(--radius-medium);
-    margin: var(--spacing-medium) 0;
-    text-align: center;
-    font-weight: bold;
-    font-size: 1.1em;
-    display: none;
-}
-
 
 /* ==================================== */
-/* 3. DApp Group Container (Card Style) */
+/* 3. Asset Display (Shared Styles) */
 /* ==================================== */
 
-.dapp-group {
+/* Total Value Display Box */
+#totalValueDisplay {
     background-color: var(--background-card);
+    border: 2px solid var(--success-color);
     border-radius: var(--radius-large);
-    box-shadow: var(--shadow-light);
-    margin-bottom: var(--spacing-large);
-    overflow: hidden; /* To contain table overflow */
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: var(--shadow-medium);
+    padding: var(--spacing-large);
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+    font-family: var(--font-body);
 }
 
-.dapp-group:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-hover);
+#totalValueDisplay span {
+    display: inline-block;
+}
+
+#totalValueDisplay span:last-child {
+    font-size: 2.2em;
+    font-weight: 700;
+    color: var(--success-color);
+    margin-top: var(--spacing-small);
+    font-family: var(--font-monospace);
+}
+
+/* DApp Group Header (Standardized) */
+.dapp-group {
+    margin-top: var(--spacing-xl);
 }
 
 .dapp-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--spacing-medium) var(--spacing-large); /* More horizontal padding */
-    background-color: #f8fbfd; /* Slightly different background for header */
-    border-bottom: 1px solid var(--border-color);
+    padding: var(--spacing-medium) var(--spacing-large);
+    background-color: var(--background-card); 
+    border-radius: var(--radius-large);
+    box-shadow: var(--shadow-sm); /* Subtle shadow for the header */
+    margin-bottom: var(--spacing-medium);
+    border: 1px solid var(--border-color);
+    /* For smaller screens, header content can wrap or adjust */
+    flex-wrap: wrap; 
+    gap: var(--spacing-medium);
 }
 
 .dapp-name {
-    font-size: 1.6em;
-    color: var(--text-dark); /* Darker text for DApp name */
+    font-size: 1.4em;
     font-weight: 600;
+    font-family: var(--font-heading);
+    color: var(--text-dark);
 }
 
 .header-right-side {
@@ -251,252 +205,139 @@ a:hover {
 }
 
 .total-usd-value {
-    font-size: 1.7em;
-    font-weight: 600;
-    color: var(--success-color); /* Green for total value */
+    font-size: 1.2em; /* Adjusted to be slightly smaller than the main total, but prominent */
+    font-weight: 700;
+    color: var(--success-color);
     font-family: var(--font-monospace);
+    /* Flex item to ensure alignment */
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.total-placeholder {
+    color: var(--text-muted); /* Mute color if value is zero */
 }
 
 .dapp-link {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--color-primary);
     font-weight: 500;
-    white-space: nowrap;
-    padding: 4px 8px;
-    border-radius: var(--radius-small);
-    background-color: rgba(52, 152, 219, 0.1); /* Light background for link */
+    text-decoration: none;
+    transition: color 0.2s;
 }
 
 .dapp-link:hover {
-    background-color: rgba(52, 152, 219, 0.2);
+    color: var(--color-primary-dark);
+    text-decoration: underline;
 }
 
+/* Card specific styling for consistency */
+.asset-card {
+    /* Use Tailwind classes inside the renderer, but define base styles here for consistency */
+    background-color: var(--background-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-large);
+    box-shadow: var(--shadow-medium);
+}
 
 /* ==================================== */
-/* 4. Asset Table */
+/* 3.1. Table Styles (Default Renderer) */
 /* ==================================== */
 
 .asset-table {
     width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed; /* Ensures consistent column widths */
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: var(--background-card);
+    border-radius: var(--radius-large);
+    overflow: hidden; /* For rounded corners */
+    box-shadow: var(--shadow-medium);
 }
 
 .asset-table th, .asset-table td {
-    padding: var(--spacing-small) var(--spacing-large); /* Consistent padding with header */
+    padding: var(--spacing-medium) var(--spacing-large);
     text-align: left;
-    border-bottom: 1px solid #f0f2f5; /* Lighter border for rows */
+    border-bottom: 1px solid var(--border-color);
 }
 
-.asset-table thead th {
-    background-color: #fdfdfd; /* White background for table header */
+.asset-table th {
+    background-color: var(--background-light);
     color: var(--text-muted);
     font-weight: 600;
-    font-size: 0.9em;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    padding-top: var(--spacing-medium);
-    padding-bottom: var(--spacing-medium);
+    font-size: 0.9em;
 }
 
-/* Remove bottom border from the last row */
 .asset-table tbody tr:last-child td {
     border-bottom: none;
 }
 
-/* Column Widths */
-.asset-table .symbol-header { width: 28%; }
-.asset-table .amount-header { width: 20%; }
-.asset-table .value-header { width: 22%; }
-.asset-table .contract-header { width: 30%; }
-
-
-/* Row Styling */
-.asset-row {
-    transition: background-color 0.2s ease;
-}
-.asset-row:hover {
-    background-color: #f7f9fb; /* Light hover effect */
+.asset-table tbody tr:hover {
+    background-color: #f3f4f6; /* Gray-100 */
 }
 
-/* Asset Symbol Column */
-.asset-symbol-col {
-    display: flex;
-    align-items: center;
-    padding-top: var(--spacing-small);
-    padding-bottom: var(--spacing-small);
-}
-
-.token-icon-placeholder {
-    width: 28px; /* Slightly larger icon */
-    height: 28px;
-    background-color: #e6e9ee; /* Light gray background */
-    border-radius: 50%;
-    margin-right: var(--spacing-small);
-    flex-shrink: 0;
-    border: 1px solid var(--border-color); /* Small border for definition */
-}
-
-.token-info {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden; /* Prevent text overflow */
-}
-
-.asset-symbol {
+.token-symbol {
     font-weight: 600;
-    font-size: 1.05em;
-    line-height: 1.3;
     color: var(--text-dark);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.asset-type {
-    font-size: 0.8em;
-    color: var(--text-muted);
-    text-transform: capitalize;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* Amount and Value Columns */
-.asset-amount-col, .asset-value-col {
-    font-family: var(--font-monospace); /* Monospace for numbers */
-    font-weight: 500;
-    font-size: 1.05em;
-}
-
-.asset-value-col {
-    font-weight: 600;
-    color: var(--success-color); /* Green for value */
-}
-
-
-/* Contract Details Column */
-.asset-contract-col {
-    font-size: 0.9em;
-    color: var(--text-muted);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.contract-copy-cell {
-    display: inline-flex; /* Use flex for icon alignment */
-    align-items: center;
-    gap: 5px;
-    padding: 4px 8px;
-    border-radius: var(--radius-small);
-    background-color: #f0f4f7; /* Light background */
-    cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.contract-copy-cell:hover {
-    background-color: #e0e6ed;
-    color: var(--text-dark);
-}
-
-.copy-icon {
-    font-size: 0.9em;
-    transform: translateY(1px); /* Slight vertical adjustment */
-}
-
-.contract-copy-cell.copied {
-    background-color: var(--success-color);
-    color: white !important;
-    font-weight: bold;
-    box-shadow: 0 2px 8px rgba(46, 204, 113, 0.3);
-}
-
-
-/* ==================================== */
-/* 5. Placeholder and Warning Styles */
-/* ==================================== */
-
-/* Protocol Failure Warning */
-.failure-warning-message {
-    background-color: var(--warning-background);
-    border: 1px solid var(--warning-border);
-    border-radius: var(--radius-medium);
-    padding: var(--spacing-medium);
-    margin-bottom: var(--spacing-large);
-    color: var(--warning-text);
-    box-shadow: var(--shadow-light);
-}
-.failure-warning-message h3 {
-    color: var(--warning-text);
-    margin-top: 0;
-    font-size: 1.3em;
-    font-weight: 600;
     display: flex;
     align-items: center;
     gap: var(--spacing-small);
 }
-.failure-warning-message h3::before {
-    content: '⚠️'; /* Emoji for visual cue */
-    font-size: 1.2em;
-}
-.failure-warning-message p {
-    color: var(--text-dark); /* General text is dark */
-    margin-bottom: var(--spacing-small);
-}
-.failure-warning-message ul {
-    list-style-type: disc;
-    margin-left: var(--spacing-large);
-    color: var(--text-muted);
-}
-.failure-warning-message li {
-    font-family: var(--font-monospace); /* Monospace for protocol names */
-}
 
-
-/* Total Value Placeholder */
-.total-usd-value.total-placeholder {
-    font-size: 1.7em; 
+.token-amount {
+    font-family: var(--font-monospace);
     font-weight: 500;
-    color: var(--text-muted); /* Gray for N/A */
 }
 
-/* Individual Asset Value Placeholder */
-.asset-value.placeholder-value {
-    color: var(--text-muted); 
-    font-weight: 500;
-    font-size: 0.95em;
-    font-style: italic;
+.token-value {
+    font-family: var(--font-monospace);
+    font-weight: 600;
+    color: var(--success-color);
 }
 
+.contract-address-box {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-size: 0.9em;
+}
+
+.contract-address {
+    font-family: var(--font-monospace);
+    font-size: 0.9em;
+    color: var(--color-primary);
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s;
+}
+
+.contract-address:hover {
+    color: var(--color-primary-dark);
+}
+
+.contract-address.copied {
+    color: var(--success-color);
+}
 
 /* ==================================== */
-/* 6. Responsive Design */
+/* 4. Responsive Design */
 /* ==================================== */
 
 @media (max-width: 768px) {
-    body {
-        padding: var(--spacing-medium);
-    }
-
     h1 {
         font-size: 2em;
-        margin-bottom: var(--spacing-large);
     }
-
+    
     .search-form {
         flex-direction: column;
         align-items: stretch;
     }
 
-    #addressInput, .search-form button {
+    #addressInput, .search-form button, #clearHistoryButton {
         width: 100%;
-        min-width: unset;
-    }
-
-    #clearHistoryButton {
-        margin-left: 0;
-        margin-top: var(--spacing-small);
-        width: 100%;
-        text-align: center;
     }
 
     .dapp-header {
@@ -505,99 +346,75 @@ a:hover {
         padding: var(--spacing-medium);
         gap: var(--spacing-small);
     }
-
-    .dapp-name {
-        font-size: 1.3em;
-    }
-
+    
     .header-right-side {
         flex-direction: column;
         align-items: flex-start;
         width: 100%;
+        gap: var(--spacing-small);
     }
 
-    .total-usd-value {
-        width: 100%; /* Take full width */
-        text-align: left;
+    .asset-table, .asset-table thead, .asset-table tbody, .asset-table th, .asset-table td, .asset-table tr { 
+        display: block; 
     }
-
-    .dapp-link {
-        width: 100%;
-        text-align: center;
-        padding: var(--spacing-small);
-    }
-
-    /* Stack table columns on very small screens */
-    .asset-table, .asset-table tbody, .asset-table tr, .asset-table td {
-        display: block;
-        width: 100%;
-    }
+    
     .asset-table thead {
-        display: none; /* Hide header on small screens */
+        display: none; /* Hide table headers (but not important for accessibility) */
     }
-    .asset-table tr {
+    
+    .asset-table tr { 
         margin-bottom: var(--spacing-small);
         border: 1px solid var(--border-color);
-        border-radius: var(--radius-medium);
-        background-color: var(--background-card);
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        border-radius: var(--radius-large);
         overflow: hidden;
+        margin-bottom: var(--spacing-medium);
     }
+    
     .asset-table td {
-        border-bottom: 1px solid #f0f2f5;
+        border-bottom: 1px solid var(--border-color);
         text-align: right;
-        padding: var(--spacing-small);
         position: relative;
-        padding-left: 50%; /* Space for pseudo-element label */
+        padding-left: 50%; /* 2-column layout for mobile */
     }
+    
     .asset-table td::before {
-        content: attr(data-label); /* Use data-label for the field name */
+        content: attr(data-label);
         position: absolute;
-        left: var(--spacing-small);
+        left: var(--spacing-medium);
         width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
         text-align: left;
         font-weight: 600;
-        color: var(--text-dark);
-        font-size: 0.9em;
-    }
-    .asset-table td:last-child {
-        border-bottom: none;
+        color: var(--text-muted);
     }
 
-    /* Adjust specific columns for mobile */
-    .asset-symbol-col {
-        justify-content: space-between;
-        padding-left: var(--spacing-small);
-        padding-right: var(--spacing-small);
+    /* Override table column widths to be full width in mobile */
+    .symbol-header, .amount-header, .value-header, .contract-header {
+        width: 100% !important;
     }
-    .asset-symbol-col .token-info {
-        flex-grow: 1;
-        text-align: left;
-        padding-left: var(--spacing-small); /* Space for icon */
-    }
-    .asset-symbol-col .token-icon-placeholder {
-        order: -1; /* Move icon to left */
-    }
-    .asset-table .asset-contract-col .contract-copy-cell {
-        width: 100%;
-        justify-content: flex-end; /* Align copy to right */
+
+    #totalValueDisplay span:last-child {
+        font-size: 1.8em;
     }
 }
 
-@media (max-width: 480px) {
-    h1 {
-        font-size: 1.8em;
+/* For Mobile Table Data Labels (Used in DefaultRenderer.js) */
+.table-data-label {
+    /* For consistency, align with ::before styles */
+    font-weight: 600;
+    color: var(--text-muted);
+    display: none; /* Only show on desktop */
+}
+
+@media (max-width: 768px) {
+    .table-data-label {
+        display: none; /* Actually, we rely on the ::before pseudo-element */
     }
-    .dapp-name {
-        font-size: 1.2em;
-    }
-    .total-usd-value {
-        font-size: 1.4em;
-    }
-    .asset-table td {
-        padding-left: var(--spacing-medium); /* Adjust padding */
-    }
-    .asset-table td::before {
-        left: var(--spacing-medium);
+    /* Ensure only the important data is shown */
+    .asset-table td[data-label="Token"] {
+        font-size: 1.1em;
+        font-weight: 700;
+        color: var(--text-dark);
     }
 }

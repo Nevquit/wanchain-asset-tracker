@@ -1,6 +1,9 @@
 //index.js
 import { renderDappGroup as renderDefaultDappGroup } from './DefaultRenderer.js';
 import { renderDappGroup as renderXFLowsDappGroup } from './xFLowsRenderer.js'; // 🚨 导入新的 xFLows 渲染器
+import { renderDappGroup as renderXStakeDappGroup } from './xStakeRenderer.js'; // 🚨 导入新的 xFLows 渲染器
+import { renderDappGroup as renderWalletDappGroup } from './WalletRenderer.js'; // 🚨 导入新的 Wallet 渲染器
+
 
 /**
  * DApp 名称到渲染函数的映射表。
@@ -8,9 +11,9 @@ import { renderDappGroup as renderXFLowsDappGroup } from './xFLowsRenderer.js'; 
  */
 export const RENDERER_MAP = {
     // 明确使用特定渲染器的 DApps
-    'Wallet': renderDefaultDappGroup,
+    'Wallet': renderWalletDappGroup,
     'xFLows': renderXFLowsDappGroup, // 🚨 为 'xFLows' 协议指定渲染器
-    
+    'xStake': renderXStakeDappGroup, // 🚨 为 'xFLows' 协议指定渲染器
     // 所有其他 DApps 的回退
     'default': renderDefaultDappGroup 
 };

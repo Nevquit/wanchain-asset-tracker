@@ -1,265 +1,247 @@
+//xFlowRenderer.js
 /**
- * xFLowsRenderer.js
- * Renders assets for the xFLows (V3 LP) protocol using a compact,
- * visually clear card layout inspired by modern DApp interfaces.
- * It relies on 'formatUSD' being passed as an argument.
+ * xFLows V3 LP NFT 专用渲染器。
+ * * 职责：
+ * 1. 接收一个 DApp 组（包含一个或多个 LP NFT 资产）。
+ * 2. 对每个 LP NFT 资产渲染一个详细的卡片视图（而不是表格行）。
+ * 3. 汇总当前 DApp 组的总价值。
+ * 4. 使用传入的 formatUSD 函数。
  */
 
-// ------------------------------------------------------------------------------------------------
-// --- 辅助函数：复制到剪贴板 (必须使用 document.execCommand) ---
-// ------------------------------------------------------------------------------------------------
-window.copyToClipboard = function(text, element) {
-    const textarea = document.createElement('textarea');
-    textarea.value = text;
-    document.body.appendChild(textarea);
-    textarea.select();
-    
-    // 使用 document.execCommand('copy') 以确保在 iFrame 环境中可用
-    let successful = false;
-    try {
-        successful = document.execCommand('copy');
-    } catch (err) {
-        console.error('Copy command failed:', err);
-    }
-    document.body.removeChild(textarea);
+// --- 实用工具函数 (在文件内部定义，确保渲染器独立) ---
 
-    if (successful) {
-        const originalText = element.innerHTML;
-        element.innerHTML = 'Copied! ✅';
-        setTimeout(() => {
-            element.innerHTML = originalText;
-        }, 1500);
-    } else {
-        console.error('Failed to copy address.');
-    }
+/**
+ * 格式化金额，保留 4 位小数。
+ * @param {string|number} amount - 数量
+ * @returns {string} 格式化后的字符串
+ */
+function formatAmount(amount) {
+    const num = parseFloat(amount);
+    // 检查是否为 NaN 或 undefined，统一返回 '0.0000'
+    if (isNaN(num) || num === undefined || num === null) return '0.0000';
+    return new Intl.NumberFormat('en-US', {
+        maximumFractionDigits: 6,
+        minimumFractionDigits: 4,
+    }).format(num);
 }
 
-// ------------------------------------------------------------------------------------------------
-// --- 辅助函数：渲染单个子资产行 (Supplied / Reward Token) ---
-// ------------------------------------------------------------------------------------------------
+/**
+ * 格式化合约地址，显示首尾部分。
+ * @param {string} address - 合约地址
+ * @returns {string} 缩短后的地址
+ */
+function formatAddress(address) {
+    if (!address || typeof address !== 'string' || address.length < 10) return address || 'N/A';
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+}
 
 /**
- * Renders a detailed row for a sub-asset (e.g., supplied token or reward token).
- * @param {Object} item - The token object (from primary_assets or reward_assets)
- * @param {Function} formatUSD - Formatting function
- * @returns {string} HTML for the sub-asset row
+ * 生成一个基于符号首字母的 SVG 图标。
+ * @param {string} symbol - 代币符号
+ * @returns {string} SVG 字符串
  */
-function renderSubAssetRow(item, formatUSD) {
-    const usdValueDisplay = formatUSD(item.usdValue || 0);
-    // 检查价格缺失，用于高亮显示
-    const isPriceMissing = (item.price === 0 && item.usdValue === 0 && parseFloat(item.amount) > 0);
-    const valueClass = isPriceMissing ? 'text-red-500' : 'text-gray-800 dark:text-gray-200';
+function generateSymbolIcon(symbol) {
+    const color = (symbol || 'N/A').charCodeAt(0) * 1000 % 0xFFFFFF;
+    const hexColor = `#${color.toString(16).padStart(6, '0')}`;
+    const initial = (symbol || '?').slice(0, 1).toUpperCase();
 
     return `
-        <div class="flex justify-between items-center py-1.5 px-1 border-b border-gray-100 dark:border-gray-700 last:border-b-0">
-            <!-- Token Icon and Symbol -->
-            <div class="flex items-center space-x-2 w-1/3">
-                <!-- 占位符图标 -->
-                <div class="w-4 h-4 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center text-xs font-semibold text-blue-600 dark:text-blue-400">${item.symbol[0]}</div>
-                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">${item.symbol}</span>
-            </div>
-            
-            <!-- Amount -->
-            <div class="text-right w-1/3">
-                <span class="text-sm font-mono text-gray-700 dark:text-gray-300">${parseFloat(item.amount).toFixed(4)}</span>
-            </div>
-
-            <!-- USD Value -->
-            <div class="text-right w-1/3">
-                <span class="text-sm font-semibold ${valueClass}">
-                    ${isPriceMissing ? 'N/A' : usdValueDisplay}
-                </span>
-            </div>
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold shadow-md" style="background-color: ${hexColor};">
+            ${initial}
         </div>
     `;
 }
 
-// ------------------------------------------------------------------------------------------------
-// --- 私有函数：渲染单个 LP 头寸卡片 ---
-// ------------------------------------------------------------------------------------------------
-
 /**
- * Renders a single LP position as a card.
- * @param {Object} positionAsset - 包含 LP 信息的资产对象
- * @param {Function} formatUSD - 格式化函数
- * @returns {string} 渲染后的 HTML 字符串
+ * 渲染单个 V3 LP NFT 卡片。
+ * @param {Object} asset - V3 LP NFT 资产对象。
+ * @param {Function} formatUSD - USD 格式化函数。
+ * @returns {string} 渲染后的卡片 HTML 字符串。
  */
-function renderPositionCard(positionAsset, formatUSD) {
-    // 解构核心和自定义字段
+function renderV3LPCard(asset, formatUSD) {
+    // 确保所有必需字段都有安全默认值，防止 undefined 错误
     const { 
-        asset: assetSymbol, // e.g., wanADA/WWAN V3 LP
-        usdValue, 
-        extra 
-    } = positionAsset;
+        asset: assetSymbol = 'Unknown Pool', 
+        amount = '1', // NFT 数量通常为 1
+        usdValue = 0, 
+        extra = {} 
+    } = asset;
     
+    // 从 extra 中安全地解构嵌套数组，并确保它们是数组
     const { 
         tokenId, 
-        feeTier, 
-        tickRange, 
-        protocolContract, 
-        DappUrl, // 🚨 修复: 确保从 extra 中读取 DappUrl (大写 D)
-        primary_assets = [], // Supplied tokens
-        reward_assets = [] // Pending rewards
-    } = extra || {}; 
+        range = 'N/A', 
+        feeTier = 'N/A', 
+        primary_assets = [], 
+        reward_assets = [],
+        DappUrl 
+    } = extra;
 
-    const totalValueDisplay = formatUSD(usdValue || 0);
-    const totalValueClass = usdValue > 0 ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400';
+    // 格式化总价值
+    const totalValueDisplay = formatUSD(usdValue);
+    const hasValue = usdValue > 0;
     
-    // --- 1. Supplied Tokens Section ---
-    const suppliedHtml = primary_assets.map(item => renderSubAssetRow(item, formatUSD)).join('');
-
-    // --- 2. Rewards Section ---
-    const totalRewardsValue = reward_assets.reduce((sum, asset) => sum + (asset.usdValue || 0), 0);
-    const rewardsValueDisplay = formatUSD(totalRewardsValue);
-
-    const rewardsHtml = reward_assets.length > 0 && totalRewardsValue > 0
-        ? reward_assets.map(item => renderSubAssetRow(item, formatUSD)).join('')
-        : `<div class="text-center text-sm text-gray-500 dark:text-gray-400 py-2">No pending rewards.</div>`;
+    // --- 渲染子资产 (Primary + Reward) ---
     
-    // --- 3. Details/Contract Footer ---
-    const fee = feeTier ? `${(feeTier / 10000).toFixed(2)}% Fee` : '';
-    const range = tickRange || 'Range N/A';
-    
-    let detailsHtml = '';
-    if (fee || range || protocolContract) {
-        let contractCopyHtml = '';
-        if (protocolContract) {
-            const displayAddress = `Pool Contract: ...${protocolContract.slice(-6)}`;
-            // 使用 window.copyToClipboard
-            contractCopyHtml = `
-                <span class="contract-copy-cell cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors ml-4" 
-                    title="Click to copy contract address"
-                    data-address="${protocolContract}"
-                    onclick="window.copyToClipboard('${protocolContract}', this)">
-                    ${displayAddress} <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 inline-block align-text-bottom" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v4a1 1 0 001 1h4a1 1 0 001-1V7m0 0V4a2 2 0 00-2-2H9a2 2 0 00-2 2v3m4 0h.01M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2v-7"></path></svg>
-                </span>
-            `;
-        }
+    // 渲染 Primary Assets
+    const primaryAssetHtml = primary_assets.map(subAsset => {
+        // 确保 subAsset 属性存在且有效，防止 undefined 
+        const symbol = subAsset.symbol || 'N/A';
+        const amountDisplay = formatAmount(subAsset.amount);
+        const priceDisplay = formatUSD(subAsset.usdPrice || 0); // 🚨 新增：显示币价
+        const valueDisplay = formatUSD(subAsset.usdValue || 0);
         
-        detailsHtml = `
-            <div class="flex flex-col sm:flex-row justify-start items-center text-xs text-gray-500 dark:text-gray-400 mt-2">
-                <span class="whitespace-nowrap">${fee} Range: ${range}</span>
-                ${contractCopyHtml}
+        return `
+            <div class="flex justify-between items-center py-1 border-b border-gray-100 last:border-b-0">
+                <div class="flex items-center space-x-2">
+                    ${generateSymbolIcon(symbol)}
+                    <span class="text-sm font-medium text-gray-800">${symbol}</span>
+                </div>
+                <div class="text-right text-sm">
+                    <div class="font-semibold">${amountDisplay}</div>
+                    <div class="text-gray-500 text-xs mt-0.5">@ ${priceDisplay}</div>
+                    <div class="text-gray-500 text-xs mt-0.5">Value: ${valueDisplay}</div>
+                </div>
             </div>
         `;
-    }
+    }).join('');
 
-    // --- 4. 最终卡片结构 ---
-    
-    // 🚨 修复: 确保链接使用 DappUrl (大写 D) 属性
-    const dappLink = DappUrl && tokenId ? `${DappUrl}/position/${tokenId}` : DappUrl;
+    // 渲染 Reward Assets
+    const rewardAssetHtml = reward_assets.map(subAsset => {
+        const symbol = subAsset.symbol || 'N/A';
+        const amountDisplay = formatAmount(subAsset.amount);
+        const priceDisplay = formatUSD(subAsset.usdPrice || 0); // 🚨 新增：显示币价
+        const valueDisplay = formatUSD(subAsset.usdValue || 0);
+
+        return `
+            <div class="flex justify-between items-center py-1 border-b border-gray-100 last:border-b-0">
+                <div class="flex items-center space-x-2">
+                    ${generateSymbolIcon(symbol)}
+                    <span class="text-sm font-medium text-green-700">${symbol} (Reward)</span>
+                </div>
+                <div class="text-right text-sm">
+                    <div class="font-semibold">${amountDisplay}</div>
+                    <div class="text-gray-500 text-xs mt-0.5">@ ${priceDisplay}</div>
+                    <div class="text-gray-500 text-xs mt-0.5">Value: ${valueDisplay}</div>
+                </div>
+            </div>
+        `;
+    }).join('');
     
     return `
-        <div class="lp-card bg-white dark:bg-gray-800 p-4 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 mb-6 w-full max-w-lg mx-auto">
-            
-            <!-- Card Header -->
-            <div class="flex justify-between items-start pb-3 border-b border-gray-200 dark:border-gray-700">
-                <div class="flex flex-col">
-                    <!-- LP Token Pair Symbol -->
-                    <span class="text-lg font-bold text-gray-800 dark:text-white">${assetSymbol}</span>
-                    <!-- Pool Identifier -->
-                    <div class="mt-1 flex items-center space-x-2">
-                        <span class="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-400 text-xs font-semibold px-2 py-0.5 rounded-full">
-                            Liquidity Pool
-                        </span>
-                        <span class="text-sm font-medium text-gray-600 dark:text-gray-300">
-                            #${tokenId || 'N/A'}
-                        </span>
-                    </div>
-                    ${detailsHtml}
+        <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition duration-300 overflow-hidden border border-gray-200">
+            <div class="bg-indigo-50 p-4 sm:p-6 flex justify-between items-start">
+                <div>
+                    <h3 class="text-xl font-extrabold text-indigo-700 leading-none">${assetSymbol}</h3>
+                    <p class="text-xs font-semibold text-indigo-500 mt-1">LP NFT ID: ${tokenId || 'N/A'}</p>
                 </div>
-                
-                <!-- Total USD Value -->
                 <div class="text-right">
-                    <span class="text-2xl font-extrabold ${totalValueClass}">
+                    <span class="text-lg sm:text-2xl font-bold ${hasValue ? 'text-green-600' : 'text-gray-500'}">
                         ${totalValueDisplay}
                     </span>
-                    <!-- DApp Link -->
-                    ${dappLink && dappLink !== "" ? `
-                        <a href="${dappLink}" target="_blank" class="text-xs text-blue-600 dark:text-blue-400 hover:underline block mt-1">
-                            Go to DApp
-                        </a>` : ''}
+                    <p class="text-xs text-gray-500 mt-1">Total Position Value</p>
                 </div>
             </div>
 
-            <!-- Asset Details (Supplied & Rewards) -->
-            <div class="mt-4">
-                <!-- Headers -->
-                <div class="flex justify-between text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase px-1 pb-1 border-b border-gray-200 dark:border-gray-700">
-                    <div class="w-1/3">Token</div>
-                    <div class="w-1/3 text-right">Amount</div>
-                    <div class="w-1/3 text-right">USD Value</div>
+            <div class="p-4 sm:p-6 space-y-4">
+                <!-- NFT Details Section -->
+                <div class="flex justify-around text-center border-b pb-4 border-gray-100">
+                    <div>
+                        <p class="text-xs font-medium text-gray-500">Range</p>
+                        <p class="font-bold text-gray-800">${range}</p>
+                    </div>
+                    <div>
+                        <p class="text-xs font-medium text-gray-500">Fee Tier</p>
+                        <p class="font-bold text-gray-800">${feeTier}</p>
+                    </div>
                 </div>
 
-                <!-- Supplied Tokens -->
-                <h4 class="text-sm font-bold mt-3 mb-1 text-gray-700 dark:text-gray-300">SUPPLIED</h4>
-                <div class="divide-y divide-gray-100 dark:divide-gray-700">
-                    ${suppliedHtml}
+                <!-- Primary Assets Section -->
+                ${primary_assets.length > 0 ? `
+                <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                    <p class="font-semibold text-gray-700 mb-2 flex items-center">
+                        <i class="fa-solid fa-layer-group mr-2 text-indigo-500"></i> Liquidity Assets
+                    </p>
+                    ${primaryAssetHtml}
                 </div>
+                ` : '<p class="text-sm text-center text-gray-500 py-2">No liquidity assets found.</p>'}
 
-                <!-- Rewards -->
-                <h4 class="text-sm font-bold mt-4 mb-1 text-gray-700 dark:text-gray-300 flex justify-between items-center">
-                    <span>PENDING REWARDS</span>
-                    <span class="text-sm font-bold text-green-600 dark:text-green-400">${rewardsValueDisplay}</span>
-                </h4>
-                <div class="divide-y divide-gray-100 dark:divide-gray-700">
-                    ${rewardsHtml}
+                <!-- Reward Assets Section -->
+                ${reward_assets.length > 0 ? `
+                <div class="bg-green-50 p-3 rounded-lg border border-green-200">
+                    <p class="font-semibold text-green-700 mb-2 flex items-center">
+                        <i class="fa-solid fa-gift mr-2"></i> Unclaimed Rewards
+                    </p>
+                    ${rewardAssetHtml}
                 </div>
-            </div>
-            
-            <!-- Action Buttons -->
-            <div class="flex justify-between space-x-4 mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
-                <button 
-                    class="flex-1 py-2.5 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition duration-150"
-                    onclick="console.log('Action: Withdraw from LP ${tokenId || 'N/A'}');">
-                    Withdraw
-                </button>
-                <button 
-                    class="flex-1 py-2.5 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-150"
-                    onclick="console.log('Action: Claim rewards for LP ${tokenId || 'N/A'}');">
-                    Claim
-                </button>
+                ` : '<p class="text-sm text-center text-gray-500 py-2">No unclaimed rewards.</p>'}
+
+                <!-- Actions/Links -->
+                <div class="pt-4 border-t border-gray-100 flex justify-end">
+                    ${DappUrl && DappUrl !== "" ? `<a href="${DappUrl}" target="_blank" class="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition duration-150 flex items-center">
+                        View Position on xFlows <i class="fa-solid fa-arrow-up-right-from-square ml-1 text-xs"></i>
+                    </a>` : ''}
+                </div>
             </div>
         </div>
     `;
 }
 
-// ------------------------------------------------------------------------------------------------
-// --- 导出函数：渲染 DApp 分组容器和卡片列表 ---
-// ------------------------------------------------------------------------------------------------
+// -------------------- 主渲染函数 (导出) --------------------
 
 /**
- * xFLows Renderer: Renders the DApp grouping container and list of LP position cards.
- * @param {string} dappName - DApp 名称
- * @param {Array<Object>} assets - 该 DApp 的资产列表 (每个元素代表一个 LP 头寸)
- * @param {Function} formatUSD - 格式化函数
+ * 渲染 xFLows (V3 LP NFT) DApp 资产组。
+ * @param {string} dappName - DApp 名称 (例如 'xFLows')
+ * @param {Array<Object>} assets - DApp 资产数组
+ * @param {Function} formatUSD - 格式化 USD 值的函数
+ * @returns {string} 渲染后的 HTML 字符串
  */
 export function renderDappGroup(dappName, assets, formatUSD) {
     if (!assets || assets.length === 0) {
         return ''; 
     }
     
-    // 渲染所有 LP 头寸卡片
-    const cardsHtml = assets.map(asset => renderPositionCard(asset, formatUSD)).join('');
+    // 计算当前 DApp 组的总价值 (所有 NFT 价值之和)
+    // 确保对 asset.usdValue 进行校验，防止 undefined/null 导致 NaN
+    const dappTotalValue = assets.reduce((sum, asset) => sum + (parseFloat(asset.usdValue) || 0), 0);
+    const totalValueDisplay = formatUSD(dappTotalValue);
 
-    // 计算当前 DApp 组的总价值
-    const dappTotalValue = assets.reduce((sum, asset) => sum + (asset.usdValue || 0), 0);
-    const totalValueDisplay = formatUSD(dappTotalValue); 
-    const totalValueClass = dappTotalValue > 0 ? 'text-green-700 dark:text-green-400' : 'text-gray-500 dark:text-gray-400';
+    // 获取 DApp URL (假设第一个资产包含 DappUrl)
+    const dappUrl = assets[0] && assets[0].extra ? assets[0].extra.DappUrl || null : null;
+
+    // 渲染所有 LP NFT 卡片
+    const cardsHtml = assets.map(asset => {
+        // 检查资产类型是否是我们期望的 V3 LP NFT
+        const assetType = asset.extra?.assetType;
+        if (assetType === 'V3_LP_POSITION' || assetType === 'V3 LP NFT') {
+            return renderV3LPCard(asset, formatUSD);
+        }
+        // 如果不是 V3 LP NFT，显示一个警告卡片
+        return `
+            <div class="bg-orange-50 rounded-xl shadow-md p-4 text-orange-700 border border-orange-200">
+                <i class="fa-solid fa-triangle-exclamation mr-2"></i>
+                Warning: Non-V3 LP NFT asset (${asset.asset || 'Unknown Asset'}) skipped.
+            </div>
+        `;
+    }).join('');
 
     return `
-        <div class="dapp-group my-8 p-4 sm:p-6 bg-gray-50 dark:bg-gray-900 rounded-xl shadow-inner">
-            <div class="dapp-header flex justify-between items-center mb-6 pb-3 border-b border-gray-200 dark:border-gray-700">
-                <h2 class="dapp-name text-2xl font-extrabold text-gray-900 dark:text-white">${dappName} Assets</h2>
-                <div class="header-right-side flex items-center space-x-4">
-                    <div class="total-usd-value text-xl font-bold ${totalValueClass}">
-                        Total Value: ${totalValueDisplay}
+        <div class="dapp-group space-y-4">
+            <!-- DApp Header 保持与 DefaultRenderer 一致的样式 -->
+            <div class="dapp-header">
+                <h2 class="dapp-name">${dappName} Assets (${assets.length} Positions)</h2>
+                <div class="header-right-side">
+                    <!-- 显示总价值，并使用 Font Awesome 图标 -->
+                    <div class="total-usd-value ${dappTotalValue === 0 ? 'total-placeholder' : ''}">
+                        <i class="fa-solid fa-sack-dollar"></i> ${totalValueDisplay}
                     </div>
+                    <!-- Go to DApp 链接 -->
+                    ${dappUrl && dappUrl !== "" ? `<a href="${dappUrl}" target="_blank" class="dapp-link">Go to DApp <i class="fa-solid fa-arrow-up-right-from-square"></i></a>` : ''}
                 </div>
             </div>
 
-            <!-- 卡片列表，使其居中 -->
-            <div class="asset-card-list flex flex-col items-center">
+            <!-- LP NFT Cards Container -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 ${cardsHtml}
             </div>
         </div>

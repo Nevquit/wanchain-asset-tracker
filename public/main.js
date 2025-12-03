@@ -83,9 +83,12 @@ async function fetchAssets() {
         if (response.status !== 200 || data.error) {
             throw new Error(data.details || data.error || 'The server returned an error.');
         }
+        console.log( "[main] data",data)
+
 
         const { assets: assetsWithValues, totalUsdValue } = await getPricesAndCalculateValues(data.assets || []);
-        
+        console.log( "[main] assetsWithValues",assetsWithValues, "[main] totalUsdValue",totalUsdValue)
+
         renderResults(assetsWithValues, data.failed_protocols || [], totalUsdValue, address);
         
         // 1. 保存地址到历史记录 (这会更新 datalist)

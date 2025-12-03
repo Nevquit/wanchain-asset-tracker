@@ -4,9 +4,9 @@ import {
     ASSET_TYPE_ID_AGGREGATORS // Import the new ID aggregation registry
 } from './assetHandlers.js';
 
-// -----------------------------------------------------
+// -----------------------------------------------------\
 // ID 聚合 (ID Aggregation) - 使用导入的 Aggregator 注册表
-// -----------------------------------------------------
+// -----------------------------------------------------\
 
 /**
  * 遍历所有资产，收集所有需要的 CoinGecko ID。
@@ -18,6 +18,7 @@ function aggregatePriceIds(assets) {
     let idLookups = new Set();
     
     assets.forEach(asset => {
+        // 兼容处理 extra.assetType 或 extra.type
         const assetType = asset.extra?.assetType || asset.extra?.type;
         
         // 根据资产类型查找 ID 聚合器，默认使用标准聚合器
@@ -31,9 +32,9 @@ function aggregatePriceIds(assets) {
 }
 
 
-// -----------------------------------------------------
+// -----------------------------------------------------\
 // 主要导出函数 (Main Export)
-// -----------------------------------------------------
+// -----------------------------------------------------\
 
 /**
  * 聚合所有资产的价格查询需求并计算 USD 价值。
@@ -46,15 +47,15 @@ export async function getPricesAndCalculateValues(assets) {
 
     // 1. 收集所有需要的价格 ID (现在使用分派机制)
     const idLookups = aggregatePriceIds(assets);
-    console.log("Collected CoinGecko IDs:", idLookups);
+    console.log("[PriceFetcher]Collected CoinGecko IDs:", idLookups);
 
     // 2. 批量获取价格
     const pricesMap = await fetchPrices(idLookups); 
     let totalUsdValue = 0; 
 
     // 3. 价值计算和分派
-    // 注意：对于 V3 LP，handler 在计算总价值的同时会修改 asset.extra 中的子资产对象
     const assetsWithValues = assets.map(asset => {
+        // 兼容处理 extra.assetType 或 extra.type
         const assetType = asset.extra?.assetType || asset.extra?.type;
         
         // 根据资产类型查找处理器，默认使用标准处理器
@@ -65,14 +66,12 @@ export async function getPricesAndCalculateValues(assets) {
         
         totalUsdValue += usdValue; 
 
+        // 为资产对象添加计算结果
         return {
             ...asset,
-            // 对于 V3 LP，usdPrice 为 0
-            price: usdPrice,
-            usdValue: usdValue 
+            usdPrice: usdPrice,
+            usdValue: usdValue,
         };
     });
-    
-    console.log("Calculated Assets:", assetsWithValues,"totalUsdValue",totalUsdValue);
     return { assets: assetsWithValues, totalUsdValue: totalUsdValue };
 }

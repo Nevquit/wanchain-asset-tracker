@@ -1,70 +1,13 @@
-//DefaultRenderer.js
+//WalletRenderer.js
 /**
- * Renders a single asset row (<tr>) for standard table display.
- * @param {Object} asset - 包含资产信息的对象
- * @param {Function} formatUSD - 从 priceFetcher 传入的格式化函数
- * @returns {string} 渲染后的 HTML 字符串
+ * Wallet 资产专用渲染器。
+ * 职责：
+ * 1. 接收一个 Wallet DApp 组（包含各种代币资产）。
+ * 2. 使用标准表格结构渲染资产。
+ * 3. 核心：在 'Details/Contract' 列中，专门显示代币的合约地址 (asset_ca)，并标记为 'Token Contract'。
  */
-function renderAssetRow(asset, formatUSD) {
-    const { asset: assetSymbol, amount, asset_ca, extra, DappName, usdValue, price } = asset; 
-    const { type, protocolContract } = extra;
-    
-    // 价格显示逻辑
-    // 价格大于 0 或数量为 0 时显示 USD 价值，否则显示价格缺失信息
-    const USD_VALUE_DISPLAY = (price > 0 || parseFloat(amount) === 0) 
-                              ? formatUSD(usdValue) 
-                              : `<span style="color: var(--info-color); font-weight: 500;">Price Missing</span>`; 
-    
-    // --- 合约地址显示逻辑：通用 DApp (显示 Protocol Contract) ---
-    // 🚨 核心修改：移除了针对 DappName === 'Wallet' 的特殊处理。
-    // 现在 DefaultRenderer 仅处理通用 DApp 资产，优先显示 Protocol Contract。
-    let contractAddress = null; 
-    let contractPrefix = '';
 
-    // 优先显示 Protocol Contract (protocolContract)
-    if (protocolContract && protocolContract !== "") {
-        contractAddress = protocolContract;
-        contractPrefix = 'Protocol Contract';
-    } 
-    // 如果 Protocol Contract 不存在，则回退到 Token Contract (资产合约)
-    else if (asset_ca && asset_ca !== "") { 
-        contractAddress = asset_ca;
-        contractPrefix = 'Token Contract';
-    }
-    
-    // 奖励合约（如果存在）
-    const rewardCaHtml = extra.rewradCa ? 
-        `<div class="mt-1 text-xs text-gray-500">Reward: ${formatAddress(extra.rewradCa)}</div>` : '';
-
-
-    const contractHtml = contractAddress ? `
-        <div class="contract-details">
-            <span class="text-xs font-semibold text-gray-700">${contractPrefix}:</span> 
-            <span class="contract-address" 
-                  title="${contractAddress}" 
-                  onclick="copyToClipboard('${contractAddress}', this.closest('.contract-details').querySelector('button'))">
-                ${formatAddress(contractAddress)}
-            </span>
-            <button class="copy-button"><i class="fa-solid fa-copy"></i></button>
-            ${rewardCaHtml}
-        </div>
-    ` : `<span class="text-xs text-gray-500">N/A</span>`;
-
-    return `
-        <tr>
-            <td class="symbol-col">
-                ${renderSymbolIcon(assetSymbol)}
-                <span class="font-semibold">${assetSymbol}</span>
-                ${DappName ? `<div class="text-xs text-gray-500 mt-1">${DappName}</div>` : ''}
-            </td>
-            <td class="amount-col">${formatAmount(amount)}</td>
-            <td class="value-col">${USD_VALUE_DISPLAY}</td>
-            <td class="contract-col">
-                ${contractHtml}
-            </td>
-        </tr>
-    `;
-}
+// --- 实用工具函数 (在文件内部定义) ---
 
 /**
  * 格式化金额，保留 4 位小数。
@@ -106,14 +49,70 @@ function renderSymbolIcon(symbol) {
     return `<div class="asset-icon ${colorClass}">${initial}</div>`;
 }
 
+/**
+ * 渲染单个资产行 (<tr>)。
+ * @param {Object} asset - 包含资产信息的对象
+ * @param {Function} formatUSD - 格式化函数
+ * @returns {string} 渲染后的 HTML 字符串
+ */
+function renderAssetRow(asset, formatUSD) {
+    const { asset: assetSymbol, amount, asset_ca, extra, DappName, usdValue, price } = asset; 
+    const { protocolContract } = extra;
+    
+    // 价格显示逻辑
+    const USD_VALUE_DISPLAY = (price > 0 || parseFloat(amount) === 0) 
+                              ? formatUSD(usdValue) 
+                              : `<span style="color: var(--info-color); font-weight: 500;">Price Missing</span>`; 
+    
+    // --- 核心 Wallet 合约地址显示逻辑：强制显示 Token Contract (asset_ca) ---
+    let contractAddress = null; 
+    let contractPrefix = '';
+
+    if (asset_ca && asset_ca !== "") {
+        contractAddress = asset_ca;
+        contractPrefix = 'Token Contract'; // Wallet 资产的核心区别
+    }
+    // 奖励合约（如果存在）
+    const rewardCaHtml = extra.rewradCa ? 
+        `<div class="mt-1 text-xs text-gray-500">Reward: ${formatAddress(extra.rewradCa)}</div>` : '';
+
+    const contractHtml = contractAddress ? `
+        <div class="contract-details">
+            <span class="text-xs font-semibold text-gray-700">${contractPrefix}:</span> 
+            <span class="contract-address" 
+                  title="${contractAddress}" 
+                  onclick="copyToClipboard('${contractAddress}', this.closest('.contract-details').querySelector('button'))">
+                ${formatAddress(contractAddress)}
+            </span>
+            <button class="copy-button"><i class="fa-solid fa-copy"></i></button>
+            ${rewardCaHtml}
+        </div>
+    ` : `<span class="text-xs text-gray-500">N/A</span>`;
+
+    return `
+        <tr>
+            <td class="symbol-col">
+                ${renderSymbolIcon(assetSymbol)}
+                <span class="font-semibold">${assetSymbol}</span>
+                ${DappName !== 'Wallet' ? `<div class="text-xs text-gray-500 mt-1">${DappName}</div>` : ''}
+            </td>
+            <td class="amount-col">${formatAmount(amount)}</td>
+            <td class="value-col">${USD_VALUE_DISPLAY}</td>
+            <td class="contract-col">
+                ${contractHtml}
+            </td>
+        </tr>
+    `;
+}
 
 /**
- * 渲染一个 DApp 组的 HTML (标准表格视图)。
- * @param {string} dappName - DApp 的名称
+ * 渲染整个 Wallet DApp 组的 HTML。
+ * @param {string} dappName - DApp 的名称 ('Wallet')
  * @param {Array<Object>} assets - DApp 资产数组
  * @param {Function} formatUSD - 格式化 USD 值的函数
  * @returns {string} 渲染后的 HTML 字符串
  */
+// 🚨 修复：将导出函数名改为 renderDappGroup，以匹配 index.js 中的导入。
 export function renderDappGroup(dappName, assets, formatUSD) {
     if (!assets || assets.length === 0) {
         return ''; 
