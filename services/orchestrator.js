@@ -1,47 +1,62 @@
 // services/orchestrator.js
 
-// 🚨 导入所有协议模块的入口函数
-import { getWalletAssets } from './protocols/wallet.js';
-import { getXWANFarmingAssets } from './protocols/xStake-xWANFarming.js';
-import { getStoremanAssets } from './protocols/storeman.js';
-import { getPoSAssets } from './protocols/pos.js';
-import { getXFLowsAssets } from './protocols/xflows.js';
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { logger } from '../utils/logger.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const PROTOCOLS_DIR = path.join(__dirname, 'protocols');
 
-// 🚨 核心：协议列表 (新增协议只需在这里添加)
-const ASSET_FETCHERS = [
-    getWalletAssets,
-    getXWANFarmingAssets,
-    getStoremanAssets,
-    getPoSAssets,
-    getXFLowsAssets,
-];
+let assetFetchers = [];
 
 /**
- * 运行所有协议的资产获取器，并聚合结果。
- * @param {string} address - 用户地址
- * @returns {Promise<AssetData[]>} 聚合后的资产数据数组
+ * Dynamically loads all asset fetcher functions from the protocols directory and caches them.
+ */
+(async () => {
+    try {
+        const files = await fs.readdir(PROTOCOLS_DIR);
+        for (const file of files) {
+            if (file.endsWith('.js')) {
+                const modulePath = path.join(PROTOCOLS_DIR, file);
+                const module = await import(modulePath);
+                for (const key in module) {
+                    if (typeof module[key] === 'function' && key.startsWith('get') && key.endsWith('Assets')) {
+                        assetFetchers.push(module[key]);
+                        logger.info(`Loaded and cached asset fetcher: ${key} from ${file}`);
+                    }
+                }
+            }
+        }
+    } catch (e) {
+        logger.error("Failed to load and cache asset fetchers", { error: e.message });
+    }
+})();
+
+/**
+ * Runs all dynamically loaded asset fetchers and aggregates the results.
+ * @param {string} address - The user's address.
+ * @returns {Promise<{assets: any[], failedProtocols: string[]}>} An object containing the aggregated assets and a list of failed protocols.
  */
 export async function fetchAllAssets(address) {
     let allAssets = [];
-    let failedProtocols = []; // 🚨 新增失败协议列表
+    let failedProtocols = [];
 
     const results = await Promise.allSettled(
-        ASSET_FETCHERS.map(fetcher => fetcher(address))
+        assetFetchers.map(fetcher => fetcher(address))
     );
 
     results.forEach((result, index) => {
-        const fetcherName = ASSET_FETCHERS[index].name; // 获取协议函数名
-        
+        const fetcherName = assetFetchers[index].name;
         if (result.status === 'fulfilled' && Array.isArray(result.value)) {
             allAssets.push(...result.value);
         } else if (result.status === 'rejected') {
-            console.error(`Asset fetcher for ${fetcherName} failed:`, result.reason);
-            // 🚨 记录失败协议的名称
-            failedProtocols.push(fetcherName); 
+            logger.error(`Asset fetcher for ${fetcherName} failed`, { reason: result.reason, address });
+            failedProtocols.push(fetcherName);
         }
     });
-    // 🚨 返回更丰富的结构
+
     return {
         assets: allAssets,
         failedProtocols: failedProtocols
