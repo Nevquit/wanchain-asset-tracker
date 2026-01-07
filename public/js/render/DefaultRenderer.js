@@ -27,11 +27,11 @@ function renderAssetCard(asset) {
                 </div>
             </div>
             <div class="asset-balance">
-                <span class="font-mono">${formatAmount(amount)}</span>
+                <span class="font-mono text-lg">${formatAmount(amount)}</span>
                 <span class="text-xs text-gray-500">@ ${priceDisplay}</span>
             </div>
             <div class="asset-value">
-                <span class="font-mono font-semibold">${valueDisplay}</span>
+                <span class="font-mono font-semibold text-lg">${valueDisplay}</span>
             </div>
             <div class="asset-contract">
                 <span class="text-xs text-gray-500">${contractType}: ${formatAddress(contractAddress)}</span>
@@ -60,7 +60,7 @@ export function renderDappGroup(dappName, assets) {
     const assetCardsHtml = assets.map(renderAssetCard).join('');
 
     return `
-        <div class="dapp-group-default">
+        <div class="dapp-group-default" data-dapp-name="${dappName}">
             <div class="dapp-header-default">
                 <h2 class="dapp-name">${dappName}</h2>
                 <div class="dapp-meta">

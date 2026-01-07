@@ -26,33 +26,31 @@
         </div>
     </header>
 
-    <main class="container">
-        <!-- 标题移到 Header 后，这里可以移除或保留作为页面标题 -->
-        <!-- <h1>Wanchain Asset Tracker</h1> -->
+    <div class="flex-grow container">
+        <div class="main-layout">
+            <aside id="sidebar" class="sidebar"></aside>
+            <main id="main-content" class="main-content">
+                <div class="search-form">
+                    <input type="text" id="addressInput" list="addressHistory" placeholder="Enter a Wanchain address to track assets across all protocols.">
+                    <datalist id="addressHistory"></datalist>
+                    <button id="fetchButton"><i class="fa-solid fa-magnifying-glass"></i> Query Assets</button>
+                    <button id="clearHistoryButton" title="Clear search history"><i class="fa-solid fa-trash-can"></i> Clear History</button>
+                </div>
 
-        <div class="search-form">
-            <input type="text" id="addressInput" list="addressHistory" placeholder="Enter a Wanchain address to track assets across all protocols.">
-            <datalist id="addressHistory"></datalist>
-            <!-- 优化按钮图标 -->
-            <button id="fetchButton"><i class="fa-solid fa-magnifying-glass"></i> Query Assets</button>
-            <button id="clearHistoryButton" title="Clear search history"><i class="fa-solid fa-trash-can"></i> Clear History</button>
+                <div id="loading" style="display: none;">
+                    <i class="fa-solid fa-spinner fa-spin"></i> Loading assets...
+                </div>
+                <div id="error" style="display: none;"></div>
+
+                <section id="resultsContainer">
+                    <p style="text-align: center; color: var(--text-muted); margin-top: 50px;">
+                        Enter a Wanchain address above to view your decentralized portfolio.
+                    </p>
+                </section>
+            </main>
         </div>
+    </div>
 
-        <!-- 错误和加载指示器 -->
-        <div id="loading" style="display: none;">
-            <i class="fa-solid fa-spinner fa-spin"></i> Loading assets...
-        </div>
-        <div id="error" style="display: none;"></div>
-
-        <!-- 结果展示区 -->
-        <section id="resultsContainer">
-            <p style="text-align: center; color: var(--text-muted); margin-top: 50px;">
-                Enter a Wanchain address above to view your decentralized portfolio.
-            </p>
-        </section>
-        
-    </main>
-    
     <footer class="footer">
         <div class="container">
             <p>&copy; 2024 Wanchain. All Rights Reserved.</p>

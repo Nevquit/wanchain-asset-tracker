@@ -90,6 +90,7 @@ async function fetchAssets() {
         console.log( "[main] assetsWithValues",assetsWithValues, "[main] totalUsdValue",totalUsdValue)
 
         renderResults(assetsWithValues, data.failed_protocols || [], totalUsdValue, address);
+        buildSidebar(assetsWithValues);
         
         // 1. 保存地址到历史记录 (这会更新 datalist)
         saveAddress(address); 
@@ -109,6 +110,45 @@ async function fetchAssets() {
         // 确保输入框聚焦，方便用户继续操作
         addressInput.focus();
     }
+}
+
+function buildSidebar(assets) {
+    const sidebar = document.getElementById('sidebar');
+    const protocols = [...new Set(assets.map(asset => asset.DappName))];
+
+    sidebar.innerHTML = `
+        <div class="sidebar-menu">
+            <a href="#" class="sidebar-item active" data-protocol="all">Portfolio</a>
+            ${protocols.map(protocol => `
+                <a href="#" class="sidebar-item" data-protocol="${protocol}">${protocol}</a>
+            `).join('')}
+        </div>
+    `;
+
+    sidebar.querySelectorAll('.sidebar-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const protocol = item.dataset.protocol;
+
+            sidebar.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+
+            const resultsContainer = document.getElementById('resultsContainer');
+            if (protocol === 'all') {
+                resultsContainer.querySelectorAll('.dapp-group-default, .dapp-group-wallet, .dapp-group-xflows, .dapp-group-xstake').forEach(group => {
+                    group.style.display = 'block';
+                });
+            } else {
+                resultsContainer.querySelectorAll('.dapp-group-default, .dapp-group-wallet, .dapp-group-xflows, .dapp-group-xstake').forEach(group => {
+                    if (group.dataset.dappName === protocol) {
+                        group.style.display = 'block';
+                    } else {
+                        group.style.display = 'none';
+                    }
+                });
+            }
+        });
+    });
 }
 
 /**

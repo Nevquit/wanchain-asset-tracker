@@ -63,7 +63,7 @@ export function renderDappGroup(dappName, assets) {
     const assetCardsHtml = assets.map(renderXFlowsCard).join('');
 
     return `
-        <div class="dapp-group-xflows">
+        <div class="dapp-group-xflows" data-dapp-name="${dappName}">
             <div class="dapp-header-default">
                 <h2 class="dapp-name">${dappName}</h2>
                 <div class="dapp-meta">

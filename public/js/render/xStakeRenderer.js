@@ -68,7 +68,7 @@ export function renderDappGroup(dappName, assets) {
     const assetCardsHtml = assets.map(renderXStakeCard).join('');
 
     return `
-        <div class="dapp-group-xstake">
+        <div class="dapp-group-xstake" data-dapp-name="${dappName}">
             <div class="dapp-header-default">
                 <h2 class="dapp-name">${dappName}</h2>
                 <div class="dapp-meta">

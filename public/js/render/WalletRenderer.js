@@ -57,7 +57,7 @@ export function renderDappGroup(dappName, assets) {
     const assetCardsHtml = assets.map(renderWalletAssetCard).join('');
 
     return `
-        <div class="dapp-group-wallet">
+        <div class="dapp-group-wallet" data-dapp-name="${dappName}">
             <div class="dapp-header-wallet">
                 <h2 class="dapp-name">${dappName}</h2>
                 <div class="dapp-meta">

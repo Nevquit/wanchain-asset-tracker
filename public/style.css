@@ -44,6 +44,9 @@ body {
     line-height: 1.6;
     margin: 0;
     padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 /* ==================================== */
@@ -77,6 +80,44 @@ body {
     max-width: 1280px;
     margin: var(--spacing-xl) auto;
     padding: 0 var(--spacing-medium);
+}
+
+.main-layout {
+    display: flex;
+    gap: var(--spacing-large);
+}
+
+.sidebar {
+    width: 250px;
+    flex-shrink: 0;
+}
+
+.main-content {
+    flex-grow: 1;
+}
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-small);
+}
+
+.sidebar-item {
+    padding: var(--spacing-small) var(--spacing-medium);
+    border-radius: var(--radius-medium);
+    text-decoration: none;
+    color: var(--text-dark);
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.sidebar-item:hover {
+    background-color: var(--background-card);
+}
+
+.sidebar-item.active {
+    background-color: var(--color-primary);
+    color: white;
+    font-weight: 500;
 }
 
 .footer {
@@ -118,6 +159,10 @@ body {
     gap: var(--spacing-medium);
     margin-bottom: var(--spacing-xl);
     align-items: center;
+    background-color: var(--background-card);
+    padding: var(--spacing-medium);
+    border-radius: var(--radius-medium);
+    border: 1px solid var(--border-color);
 }
 
 #addressInput {
@@ -336,11 +381,17 @@ body {
     border: 1px solid var(--border-color);
     padding: var(--spacing-medium);
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr auto;
     grid-template-rows: auto auto;
     gap: var(--spacing-medium);
     box-shadow: var(--shadow-sm);
     transition: box-shadow 0.2s;
+}
+
+.asset-balance, .asset-value {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
 }
 
 .asset-card-default:hover {
