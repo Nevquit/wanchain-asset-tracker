@@ -14,12 +14,12 @@ function renderXStakeCard(asset) {
     const totalValue = (stakedUsdValue || 0) + (reward ? reward.usdValue || 0 : 0);
     const totalValueDisplay = formatUSD(totalValue);
 
-    const renderSubAsset = (symbol, amount, value, isReward = false) => {
+    const renderSubAsset = (symbol, amount, value, contractAddress, isReward = false) => {
         const valueDisplay = formatUSD(value);
         return `
             <div class="sub-asset">
                 <div class="asset-info">
-                    ${renderSymbolIcon(symbol)}
+                    ${renderSymbolIcon(symbol, contractAddress)}
                     <span>${symbol} ${isReward ? '(Reward)' : ''}</span>
                 </div>
                 <div class="asset-balance">
@@ -30,8 +30,8 @@ function renderXStakeCard(asset) {
         `;
     };
 
-    const stakedAssetHtml = renderSubAsset(stakedSymbol, stakedAmount, stakedUsdValue);
-    const rewardAssetHtml = reward ? renderSubAsset(reward.asset, reward.amount, reward.usdValue, true) : '';
+    const stakedAssetHtml = renderSubAsset(stakedSymbol, stakedAmount, stakedUsdValue, asset.asset_ca);
+    const rewardAssetHtml = reward ? renderSubAsset(reward.asset, reward.amount, reward.usdValue, reward.asset_ca, true) : '';
 
     return `
         <div class="asset-card-xstake">

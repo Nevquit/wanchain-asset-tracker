@@ -20,7 +20,7 @@ function renderAssetCard(asset) {
     return `
         <div class="asset-card-default">
             <div class="asset-info">
-                ${renderSymbolIcon(assetSymbol)}
+                ${renderSymbolIcon(assetSymbol, asset_ca)}
                 <div class="asset-name">
                     <span class="font-semibold">${assetSymbol}</span>
                     <span class="text-xs text-gray-500">${type || 'Token'}</span>

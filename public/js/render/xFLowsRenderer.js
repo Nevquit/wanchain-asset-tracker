@@ -18,7 +18,7 @@ function renderXFlowsCard(asset) {
         return `
             <div class="sub-asset">
                 <div class="asset-info">
-                    ${renderSymbolIcon(subAsset.symbol)}
+                    ${renderSymbolIcon(subAsset.symbol, subAsset.address)}
                     <span>${subAsset.symbol} ${isReward ? '(Reward)' : ''}</span>
                 </div>
                 <div class="asset-balance">

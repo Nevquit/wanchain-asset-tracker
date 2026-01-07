@@ -4,17 +4,17 @@
 
 :root {
     /* Colors */
-    --color-primary: #4f46e5;           /* Indigo-600 (Wanchain-like Blue/Purple) */
-    --color-primary-dark: #4338ca;      /* Indigo-700 */
-    --color-accent: #f59e0b;            /* Amber-500 for secondary action */
-    --background-light: #f9fafb;        /* Very Light Gray background (Gray-50) */
-    --background-card: #ffffff;
-    --border-color: #e5e7eb;            /* Light border (Gray-200) */
-    --text-dark: #1f2937;               /* Dark text (Gray-900) */
-    --text-muted: #6b7280;              /* Muted gray text (Gray-500) */
-    --success-color: #10b981;           /* Emerald-500 (Green for value) */
-    --error-color: #ef4444;             /* Red-500 */
-    --info-color: #3b82f6;              /* Blue-500 for info/missing data */
+    --color-primary: #1E90FF;       /* DodgerBlue */
+    --color-primary-dark: #1C86EE;   /* DodgerBlue2 */
+    --color-accent: #FFD700;        /* Gold */
+    --background-light: #F0F8FF;    /* AliceBlue */
+    --background-card: #FFFFFF;
+    --border-color: #E0FFFF;        /* LightCyan */
+    --text-dark: #2F4F4F;           /* DarkSlateGray */
+    --text-muted: #708090;          /* SlateGray */
+    --success-color: #32CD32;       /* LimeGreen */
+    --error-color: #FF6347;         /* Tomato */
+    --info-color: #87CEEB;          /* SkyBlue */
 
     /* Typography */
     --font-heading: 'Poppins', sans-serif;

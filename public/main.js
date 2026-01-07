@@ -113,24 +113,29 @@ async function fetchAssets() {
 }
 
 function buildSidebar(assets) {
-    const sidebar = document.getElementById('sidebar');
+    const sidebarMenu = document.querySelector('.sidebar-menu');
+    const existingProtocols = new Set(Array.from(sidebarMenu.querySelectorAll('.sidebar-item')).map(item => item.dataset.protocol));
+
     const protocols = [...new Set(assets.map(asset => asset.DappName))];
 
-    sidebar.innerHTML = `
-        <div class="sidebar-menu">
-            <a href="#" class="sidebar-item active" data-protocol="all">Portfolio</a>
-            ${protocols.map(protocol => `
-                <a href="#" class="sidebar-item" data-protocol="${protocol}">${protocol}</a>
-            `).join('')}
-        </div>
-    `;
+    protocols.forEach(protocol => {
+        if (!existingProtocols.has(protocol)) {
+            const item = document.createElement('a');
+            item.href = '#';
+            item.classList.add('sidebar-item');
+            item.dataset.protocol = protocol;
+            item.textContent = protocol;
+            sidebarMenu.appendChild(item);
+            existingProtocols.add(protocol);
+        }
+    });
 
-    sidebar.querySelectorAll('.sidebar-item').forEach(item => {
+    sidebarMenu.querySelectorAll('.sidebar-item').forEach(item => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
             const protocol = item.dataset.protocol;
 
-            sidebar.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            sidebarMenu.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
             item.classList.add('active');
 
             const resultsContainer = document.getElementById('resultsContainer');
@@ -157,6 +162,16 @@ function buildSidebar(assets) {
 function init() {
     const saved = getSavedAddresses();
     updateDatalist(saved);
+
+    document.querySelector('.sidebar-item[data-protocol="all"]').addEventListener('click', (e) => {
+        e.preventDefault();
+        document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+        e.target.classList.add('active');
+        document.querySelectorAll('.dapp-group-default, .dapp-group-wallet, .dapp-group-xflows, .dapp-group-xstake').forEach(group => {
+            group.style.display = 'block';
+        });
+    });
+
     // Bind events
     clearHistoryButton.addEventListener('click', clearAddressHistory);
     fetchButton.addEventListener('click', fetchAssets);

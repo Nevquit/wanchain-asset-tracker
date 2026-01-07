@@ -49,13 +49,22 @@ export function getDappUrl(assets) {
 }
 
 /**
+import { COINGECKO_TOKEN_MAP } from '../priceFetch/config.js';
+
+/**
  * Renders a simple icon with the first letter of the asset symbol.
  * @param {string} symbol - The asset symbol.
+ * @param {string} contractAddress - The asset's contract address.
  * @returns {string} - The HTML for the symbol icon.
  */
-export function renderSymbolIcon(symbol) {
+export function renderSymbolIcon(symbol, contractAddress) {
+    const tokenInfo = COINGECKO_TOKEN_MAP[contractAddress.toLowerCase()];
+    if (tokenInfo && tokenInfo.imageUrl) {
+        return `<img src="${tokenInfo.imageUrl}" alt="${symbol}" class="asset-icon">`;
+    }
+
     const initial = symbol ? symbol.charAt(0).toUpperCase() : '?';
-    const colors = ['bg-indigo-500', 'bg-blue-500', 'bg-green-500', 'bg-pink-500', 'bg-purple-500', 'bg-red-500'];
+    const colors = ['bg-blue-500', 'bg-green-500', 'bg-pink-500', 'bg-purple-500', 'bg-red-500', 'bg-yellow-500', 'bg-indigo-500', 'bg-teal-500'];
     const colorClass = colors[Math.abs(symbol.charCodeAt(0) - 65) % colors.length];
     return `<div class="asset-icon ${colorClass}">${initial}</div>`;
 }
