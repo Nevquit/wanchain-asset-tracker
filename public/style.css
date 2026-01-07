@@ -49,21 +49,65 @@ body {
 /* ==================================== */
 /* 1. Global Layout & Typography */
 /* ==================================== */
+.header {
+    background-color: var(--background-card);
+    padding: var(--spacing-medium) 0;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
 
+.header .container {
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.logo {
+    height: 40px;
+    margin-right: var(--spacing-medium);
+}
+
+.header-title {
+    font-family: var(--font-heading);
+    font-size: 1.5em;
+    font-weight: 600;
+    color: var(--text-dark);
+}
 .container {
     max-width: 1280px;
     margin: var(--spacing-xl) auto;
     padding: 0 var(--spacing-medium);
 }
 
-h1 {
-    font-family: var(--font-heading);
-    font-size: 2.5em;
-    font-weight: 600;
-    color: var(--color-primary-dark);
-    text-align: center;
-    margin-bottom: var(--spacing-large);
+.footer {
+    background-color: var(--background-card);
+    padding: var(--spacing-large) 0;
+    margin-top: var(--spacing-xl);
+    border-top: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: 0.9em;
 }
+
+.footer .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    gap: var(--spacing-medium);
+}
+
+.footer-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-left: var(--spacing-medium);
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: var(--color-primary);
+}
+
 
 /* ==================================== */
 /* 2. Input and Buttons */

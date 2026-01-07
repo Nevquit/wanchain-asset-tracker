@@ -19,8 +19,17 @@
     <link rel="icon" type="image/svg+xml" href="/images/logo.svg">
 </head>
 <body>
+    <header class="header">
+        <div class="container">
+            <img src="/images/logo.svg" alt="Wanchain Logo" class="logo">
+            <span class="header-title">Wanchain Asset Tracker</span>
+        </div>
+    </header>
+
     <main class="container">
-        <h1>Wanchain Asset Tracker</h1>
+        <!-- 标题移到 Header 后，这里可以移除或保留作为页面标题 -->
+        <!-- <h1>Wanchain Asset Tracker</h1> -->
+
         <div class="search-form">
             <input type="text" id="addressInput" list="addressHistory" placeholder="Enter a Wanchain address to track assets across all protocols.">
             <datalist id="addressHistory"></datalist>
@@ -44,6 +53,17 @@
         
     </main>
     
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Wanchain. All Rights Reserved.</p>
+            <div class="footer-links">
+                <a href="https://www.wanchain.org/" target="_blank">Website</a>
+                <a href="https://wanscan.org/" target="_blank">Block Explorer</a>
+                <a href="https://github.com/wanchain/wanchain-asset-tracker" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </footer>
+
     <!-- JavaScript Modules -->
     <script type="module" src="main.js"></script>
 </body>
