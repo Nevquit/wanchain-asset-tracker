@@ -1,4 +1,4 @@
-// public/js/render/renderUtils.js
+import { COINGECKO_TOKEN_MAP } from '../priceFetch/config.js';
 
 /**
  * Formats a number into a USD currency string.
@@ -47,9 +47,6 @@ export function getDappUrl(assets) {
     const firstAssetWithUrl = assets.find(a => a.extra && a.extra.DappUrl);
     return firstAssetWithUrl ? firstAssetWithUrl.extra.DappUrl : null;
 }
-
-/**
-import { COINGECKO_TOKEN_MAP } from '../priceFetch/config.js';
 
 /**
  * Renders a simple icon with the first letter of the asset symbol.
