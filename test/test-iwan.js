@@ -1,8 +1,8 @@
 // test/test-iwan.js
 
 // 注意：导入路径已更新，使用 ../ 来访问上一级目录的模块
-import { fetchStoremanDelegation } from '../services/asset-fetchers.js';
-import { IWAN_CONFIG } from '../config/constants.js';
+import { getStoremanAssets } from '../services/protocols/storeman.js';
+import { IWAN_CONFIG } from '../config/shared.js';
 
 // --- 配置信息 ---
 // 使用一个已知的 Wanchain 地址进行测试
@@ -11,7 +11,7 @@ const TEST_ADDRESS = "0x0aebb4E377bda28FCF2Ee19dBe47E721D79A10c6";
 
 // --- 主测试函数 ---
 async function runTest() {
-    console.log(`\n--- 🚀 正在测试 fetchStoremanDelegation ---`);
+    console.log(`\n--- 🚀 正在测试 getStoremanAssets ---`);
     console.log(`   目标地址: ${TEST_ADDRESS}`);
     console.log(`   IWAN API Key: ${IWAN_CONFIG.API_KEY.startsWith('YOUR') ? '未配置 (使用默认值)' : '已配置'}`);
     
@@ -21,7 +21,7 @@ async function runTest() {
 
     try {
         // 调用 services 中的函数
-        const results = await fetchStoremanDelegation(TEST_ADDRESS);
+        const results = await getStoremanAssets(TEST_ADDRESS);
 
         console.log('\n✅ 测试成功 - 函数返回的 AssetData 结构数据:');
         console.log(JSON.stringify(results, null, 2));

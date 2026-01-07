@@ -14,9 +14,9 @@ export const ERC20_ABI = [
 
 // iWAN SDK 配置 (作为通用配置，因为它可能被多个协议依赖)
 export const IWAN_CONFIG = {
-    API_KEY: process.env.IWAN_API_KEY || 'YOUR_DEFAULT_API_KEY', 
-    SECRET_KEY: process.env.IWAN_SECRET_KEY || 'YOUR_DEFAULT_SECRET_KEY',
-    URL: process.env.IWAN_RPC_URL || "api.wanchain.org",
+    get API_KEY() { return process.env.IWAN_API_KEY || 'YOUR_DEFAULT_API_KEY'; },
+    get SECRET_KEY() { return process.env.IWAN_SECRET_KEY || 'YOUR_DEFAULT_SECRET_KEY'; },
+    get URL() { return process.env.IWAN_RPC_URL || "api.wanchain.org"; },
     PORT: 8443,
 };
 
