@@ -1,0 +1,21 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" rx="90" fill="#0A3455"></rect>
+
+  <!-- Line chart path -->
+  <path d="M120 330 L210 250 L300 290 L390 180" stroke="#FFFFFF" stroke-width="32" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+
+  <!-- Dots -->
+  <circle cx="120" cy="330" r="20" fill="#FFFFFF"></circle>
+  <circle cx="210" cy="250" r="20" fill="#FFFFFF"></circle>
+  <circle cx="300" cy="290" r="20" fill="#FFFFFF"></circle>
+
+  <!-- Arrow -->
+  <path d="M390 180 L355 175 L370 210 Z" fill="#FFFFFF"></path>
+
+  <!-- Magnifying glass circle -->
+  <circle cx="330" cy="350" r="70" stroke="#FFFFFF" stroke-width="28" fill="none"></circle>
+
+  <!-- Magnifying glass handle -->
+  <line x1="380" y1="400" x2="440" y2="460" stroke="#FFFFFF" stroke-width="28" stroke-linecap="round"></line>
+</svg>

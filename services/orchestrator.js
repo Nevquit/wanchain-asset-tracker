@@ -41,7 +41,6 @@ export async function fetchAllAssets(address) {
             failedProtocols.push(fetcherName); 
         }
     });
-
     // 🚨 返回更丰富的结构
     return {
         assets: allAssets,

@@ -136,7 +136,7 @@ export async function getStoremanAssets(userAddr) {
 
     } catch (e) {
         console.error("[ERROR] Storeman asset check failed:", e.message);
-        return null; 
+        return null;
     } finally {
         if (apiClient && typeof apiClient.close === 'function') {
             apiClient.close();

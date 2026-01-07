@@ -124,7 +124,7 @@ export async function getPoSAssets(userAddr) {
         // 🚨 增强错误日志记录，以防 e.message 为 undefined
         const errorMessage = (e && e.message) ? e.message : (e ? e.toString() : 'Unknown error during PoS API call.');
         console.error(`[ERROR] PoS asset check failed: ${errorMessage}`);
-        return null; 
+        return null;
     } finally {
         if (apiClient && typeof apiClient.close === 'function') {
             // 确保关闭 iWAN 客户端连接

@@ -1,6 +1,6 @@
 // main.js - 修复地址切换问题的完整文件
 
-import { getPricesAndCalculateValues } from '/js/priceFetcher.js'; 
+import { getPricesAndCalculateValues } from '/js/priceFetch/priceFetcher.js'; 
 import { renderResults } from '/js/render.js'; 
 
 const API_ENDPOINT = "/api/asset-tracker";
@@ -83,10 +83,14 @@ async function fetchAssets() {
         if (response.status !== 200 || data.error) {
             throw new Error(data.details || data.error || 'The server returned an error.');
         }
+        console.log( "[main] data",data)
+
 
         const { assets: assetsWithValues, totalUsdValue } = await getPricesAndCalculateValues(data.assets || []);
-        
+        console.log( "[main] assetsWithValues",assetsWithValues, "[main] totalUsdValue",totalUsdValue)
+
         renderResults(assetsWithValues, data.failed_protocols || [], totalUsdValue, address);
+        buildSidebar(assetsWithValues);
         
         // 1. 保存地址到历史记录 (这会更新 datalist)
         saveAddress(address); 
@@ -108,12 +112,66 @@ async function fetchAssets() {
     }
 }
 
+function buildSidebar(assets) {
+    const sidebarMenu = document.querySelector('.sidebar-menu');
+    const existingProtocols = new Set(Array.from(sidebarMenu.querySelectorAll('.sidebar-item')).map(item => item.dataset.protocol));
+
+    const protocols = [...new Set(assets.map(asset => asset.DappName))];
+
+    protocols.forEach(protocol => {
+        if (!existingProtocols.has(protocol)) {
+            const item = document.createElement('a');
+            item.href = '#';
+            item.classList.add('sidebar-item');
+            item.dataset.protocol = protocol;
+            item.textContent = protocol;
+            sidebarMenu.appendChild(item);
+            existingProtocols.add(protocol);
+        }
+    });
+
+    sidebarMenu.querySelectorAll('.sidebar-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const protocol = item.dataset.protocol;
+
+            sidebarMenu.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+
+            const resultsContainer = document.getElementById('resultsContainer');
+            if (protocol === 'all') {
+                resultsContainer.querySelectorAll('.dapp-group-default, .dapp-group-wallet, .dapp-group-xflows, .dapp-group-xstake').forEach(group => {
+                    group.style.display = 'block';
+                });
+            } else {
+                resultsContainer.querySelectorAll('.dapp-group-default, .dapp-group-wallet, .dapp-group-xflows, .dapp-group-xstake').forEach(group => {
+                    if (group.dataset.dappName === protocol) {
+                        group.style.display = 'block';
+                    } else {
+                        group.style.display = 'none';
+                    }
+                });
+            }
+        });
+    });
+}
+
 /**
  * Page initialization function
  */
 function init() {
     const saved = getSavedAddresses();
     updateDatalist(saved);
+
+    document.querySelector('.sidebar-item[data-protocol="all"]').addEventListener('click', (e) => {
+        e.preventDefault();
+        document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+        e.target.classList.add('active');
+        document.querySelectorAll('.dapp-group-default, .dapp-group-wallet, .dapp-group-xflows, .dapp-group-xstake').forEach(group => {
+            group.style.display = 'block';
+        });
+    });
+
     // Bind events
     clearHistoryButton.addEventListener('click', clearAddressHistory);
     fetchButton.addEventListener('click', fetchAssets);

@@ -1,24 +1,21 @@
-// public/js/render/DefaultRenderer.js
+// public/js/render/WalletRenderer.js
 
 import { formatAmount, formatAddress, formatUSD, getDappUrl, renderSymbolIcon } from './renderUtils.js';
 
 /**
- * Renders a single asset card for a standard display.
+ * Renders a single asset card for the wallet view.
  * @param {Object} asset - The asset object.
  * @returns {string} - The HTML string for the asset card.
  */
-function renderAssetCard(asset) {
+function renderWalletAssetCard(asset) {
     const { asset: assetSymbol, amount, asset_ca, extra, usdValue, usdPrice } = asset;
-    const { type, protocolContract } = extra || {};
+    const { type } = extra || {};
 
     const priceDisplay = usdPrice > 0 ? formatUSD(usdPrice) : 'N/A';
     const valueDisplay = usdValue > 0 ? formatUSD(usdValue) : 'N/A';
 
-    let contractAddress = protocolContract || asset_ca;
-    let contractType = protocolContract ? 'Protocol' : 'Token';
-
     return `
-        <div class="asset-card-default">
+        <div class="asset-card-wallet">
             <div class="asset-info">
                 ${renderSymbolIcon(assetSymbol, asset_ca)}
                 <div class="asset-name">
@@ -27,15 +24,15 @@ function renderAssetCard(asset) {
                 </div>
             </div>
             <div class="asset-balance">
-                <span class="font-mono text-lg">${formatAmount(amount)}</span>
+                <span class="font-mono">${formatAmount(amount)}</span>
                 <span class="text-xs text-gray-500">@ ${priceDisplay}</span>
             </div>
             <div class="asset-value">
-                <span class="font-mono font-semibold text-lg">${valueDisplay}</span>
+                <span class="font-mono font-semibold">${valueDisplay}</span>
             </div>
             <div class="asset-contract">
-                <span class="text-xs text-gray-500">${contractType}: ${formatAddress(contractAddress)}</span>
-                <button class="copy-button" onclick="copyToClipboard('${contractAddress}', this)">
+                <span class="text-xs text-gray-500">Token: ${formatAddress(asset_ca)}</span>
+                <button class="copy-button" onclick="copyToClipboard('${asset_ca}', this)">
                     <i class="fa-solid fa-copy"></i>
                 </button>
             </div>
@@ -44,10 +41,10 @@ function renderAssetCard(asset) {
 }
 
 /**
- * Renders a DApp group with a default card-based layout.
- * @param {string} dappName - The name of the DApp.
- * @param {Array<Object>} assets - An array of assets for the DApp.
- * @returns {string} - The HTML string for the DApp group.
+ * Renders the Wallet group with a card-based layout.
+ * @param {string} dappName - The name of the DApp (Wallet).
+ * @param {Array<Object>} assets - An array of wallet assets.
+ * @returns {string} - The HTML string for the Wallet group.
  */
 export function renderDappGroup(dappName, assets) {
     if (!assets || assets.length === 0) {
@@ -57,21 +54,21 @@ export function renderDappGroup(dappName, assets) {
     const dappUrl = getDappUrl(assets);
     const dappTotalValue = assets.reduce((sum, asset) => sum + (asset.usdValue || 0), 0);
 
-    const assetCardsHtml = assets.map(renderAssetCard).join('');
+    const assetCardsHtml = assets.map(renderWalletAssetCard).join('');
 
     return `
-        <div class="dapp-group-default" data-dapp-name="${dappName}">
-            <div class="dapp-header-default">
+        <div class="dapp-group-wallet" data-dapp-name="${dappName}">
+            <div class="dapp-header-wallet">
                 <h2 class="dapp-name">${dappName}</h2>
                 <div class="dapp-meta">
                     <div class="total-value">
                         <i class="fa-solid fa-sack-dollar"></i>
                         <span>${formatUSD(dappTotalValue)}</span>
                     </div>
-                    ${dappUrl ? `<a href="${dappUrl}" target="_blank" class="dapp-link">Go to DApp <i class="fa-solid fa-arrow-up-right-from-square"></i></a>` : ''}
+                    ${dappUrl ? `<a href="${dappUrl}" target="_blank" class="dapp-link">View on Wanscan <i class="fa-solid fa-arrow-up-right-from-square"></i></a>` : ''}
                 </div>
             </div>
-            <div class="assets-container-default">
+            <div class="assets-container-wallet">
                 ${assetCardsHtml}
             </div>
         </div>
