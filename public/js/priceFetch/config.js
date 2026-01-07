@@ -9,6 +9,9 @@ export const COINGECKO_TOKEN_MAP = {
     "0x0000000000000000000000000000000000000000":{ symbol: "WAN", coingeckoId: "wanchain" },
     "0xdabd997ae5e4799be47d6e69d9431615cba28f48":{ symbol: "WWAN", coingeckoId: "wanchain" },
     "0x79d745178bc271a1f29f8fbe9251dfc512db842c":{ symbol: "wanADA", coingeckoId: "cardano" },
+    "0x8b9f9f4aa777d142ec10b7b72ade921f2de83b28":{ symbol: "WASP", coingeckoId: "wanswap" },
+    "0xf314e91e4f7117e128153406e23761b0c9b74075":{ symbol: "wanXRP", coingeckoId: "ripple" },
+    "0x9134a01c3b0833a6f1d1b2a658d2495d4d12643a":{ symbol: "wanDOT", coingeckoId: "polkadot" },
 
 
 };
