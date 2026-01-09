@@ -173,7 +173,7 @@ export default function HomePage() {
                       key={`${asset.protocol}-${asset.name}-${asset.address}`}
                       icon={asset.logo}
                       name={asset.name}
-                      balance={`${asset.balance.toFixed(4)} ${asset.name}`}
+                      balance={typeof asset.balance === 'number' ? `${asset.balance.toFixed(4)} ${asset.name}` : `N/A ${asset.name}`}
                       price={formatCurrency(asset.price)}
                       value={formatCurrency(asset.value)}
                       address={asset.address}
