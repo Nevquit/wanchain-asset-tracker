@@ -3,9 +3,9 @@
 
 import { toBigInt } from 'ethers';
 import IWAN from 'iwan-sdk';
-import { IWAN_CONFIG } from '../../config/shared.js';
-import { formatUnits } from '../../utils/helpers.js';
-import { createAssetData } from '../../utils/assetModel.js';
+import { IWAN_CONFIG } from '../../src/config/shared.js';
+import { formatUnits } from '../../src/utils/helpers.js';
+import { createAssetData } from '../../src/utils/assetModel.js';
 
 // --- 协议配置 ---
 const DAPP_NAME = "PoS Staking"; // PoS 协议的 DApp 名称

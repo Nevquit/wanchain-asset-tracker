@@ -1,8 +1,8 @@
 import { Contract, isAddress } from 'ethers';
 // 假设 getProvider, ERC20_ABI 在 shared.js 中
-import { getProvider, ERC20_ABI } from '../../config/shared.js';
-import { formatUnits } from '../../utils/helpers.js';
-import { createAssetData } from '../../utils/assetModel.js';
+import { getProvider, ERC20_ABI } from '../../src/config/shared.js';
+import { formatUnits } from '../../src/utils/helpers.js';
+import { createAssetData } from '../../src/utils/assetModel.js';
 
 const Dapp = "xStake";
 

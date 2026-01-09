@@ -1,7 +1,7 @@
 import { Contract, isAddress, ZeroAddress } from 'ethers';
-import { getProvider } from '../../config/shared.js';
-import { formatUnits } from '../../utils/helpers.js'; 
-import { createAssetData } from '../../utils/assetModel.js'; 
+import { getProvider } from '../../src/config/shared.js';
+import { formatUnits } from '../../src/utils/helpers.js';
+import { createAssetData } from '../../src/utils/assetModel.js';
 
 const Dapp = "xFLows";
 const DappUrl = "https://xflows.wanchain.org/"; // 假设的 DApp URL

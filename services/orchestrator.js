@@ -1,49 +1,87 @@
 // services/orchestrator.js
+import fs from 'fs/promises';
+import path from 'path';
 
-// 🚨 导入所有协议模块的入口函数
-import { getWalletAssets } from './protocols/wallet.js';
-import { getXWANFarmingAssets } from './protocols/xwanFarming.js';
-import { getStoremanAssets } from './protocols/storeman.js';
-import { getPoSAssets } from './protocols/pos.js';
-import { getXFLowsAssets } from './protocols/xflows.js';
+const getProtocolsDirectory = () => {
+  return path.join(process.cwd(), 'services', 'protocols');
+};
 
-
-// 🚨 核心：协议列表 (新增协议只需在这里添加)
-const ASSET_FETCHERS = [
-    getWalletAssets,
-    getXWANFarmingAssets,
-    getStoremanAssets,
-    getPoSAssets,
-    getXFLowsAssets,
-];
-
-/**
- * 运行所有协议的资产获取器，并聚合结果。
- * @param {string} address - 用户地址
- * @returns {Promise<AssetData[]>} 聚合后的资产数据数组
- */
 export async function fetchAllAssets(address) {
-    let allAssets = [];
-    let failedProtocols = []; // 🚨 新增失败协议列表
+  console.log('--- [Orchestrator] Starting fetchAllAssets ---');
+  console.log(`   - Address: ${address}`);
 
-    const results = await Promise.allSettled(
-        ASSET_FETCHERS.map(fetcher => fetcher(address))
-    );
+  const allAssets = [];
+  const failedProtocols = [];
+  const protocolsDir = getProtocolsDirectory();
 
-    results.forEach((result, index) => {
-        const fetcherName = ASSET_FETCHERS[index].name; // 获取协议函数名
-        
-        if (result.status === 'fulfilled' && Array.isArray(result.value)) {
-            allAssets.push(...result.value);
-        } else if (result.status === 'rejected') {
-            console.error(`Asset fetcher for ${fetcherName} failed:`, result.reason);
-            // 🚨 记录失败协议的名称
-            failedProtocols.push(fetcherName); 
+  try {
+    const files = await fs.readdir(protocolsDir);
+    const protocolFiles = files.filter(file => file.endsWith('.js'));
+    console.log(`   - Found protocol files: ${protocolFiles.join(', ')}`);
+
+    const fetchPromises = protocolFiles.map(async (file) => {
+      const protocolPath = path.join(protocolsDir, file);
+      const protocolName = path.basename(file, '.js');
+      console.log(`   - [${protocolName}] Processing...`);
+
+      try {
+        // FINAL FIX: Use a relative path from the current file for dynamic import.
+        // This avoids tsconfig path alias issues in .js files.
+        const protocolModule = await import(`./protocols/${file}`);
+
+        const exportedFunctionName = Object.keys(protocolModule).find(
+          key => typeof protocolModule[key] === 'function'
+        );
+
+        if (!exportedFunctionName) {
+          throw new Error(`No exported function found`);
         }
+
+        console.log(`   - [${protocolName}] Found function: ${exportedFunctionName}`);
+        const fetcher = protocolModule[exportedFunctionName];
+
+        console.log(`   - [${protocolName}] Executing fetcher...`);
+        const assets = await fetcher(address);
+        
+        // --- 核心调试日志 ---
+        console.log(`   - [${protocolName}] Raw output received:`, JSON.stringify(assets, null, 2));
+        // --- 核心调试日志 ---
+
+        if (Array.isArray(assets)) {
+          console.log(`   - [${protocolName}] Success. Found ${assets.length} assets.`);
+          return { protocolName, assets };
+        } else {
+          console.warn(`   - [${protocolName}] WARNING: Did not return an array. Assuming failure.`);
+          throw new Error(`Invalid return type`);
+        }
+
+      } catch (error) {
+        console.error(`   - [${protocolName}] ERROR: ${error.message}`);
+        return { protocolName, error };
+      }
     });
-    // 🚨 返回更丰富的结构
+
+    const results = await Promise.all(fetchPromises);
+
+    for (const result of results) {
+      if (result.error) {
+        failedProtocols.push(result.protocolName);
+      } else if (result.assets) {
+        allAssets.push(...result.assets);
+      }
+    }
+
+  } catch (error) {
+    console.error("--- [Orchestrator] CRITICAL ERROR: Failed to read protocols directory ---", error.message);
     return {
-        assets: allAssets,
-        failedProtocols: failedProtocols
+      assets: [],
+      failedProtocols: ['orchestrator_failure']
     };
+  }
+
+  console.log('--- [Orchestrator] Finished. ---');
+  return {
+    assets: allAssets,
+    failedProtocols: failedProtocols,
+  };
 }

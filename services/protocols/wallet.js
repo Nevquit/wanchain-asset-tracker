@@ -1,9 +1,9 @@
 // services/protocols/wallet.js
 
 import { Contract } from 'ethers';
-import { getProvider, ERC20_ABI } from '../../config/shared.js';
-import { formatUnits } from '../../utils/helpers.js';
-import { createAssetData } from '../../utils/assetModel.js';
+import { getProvider, ERC20_ABI } from '../../src/config/shared.js';
+import { formatUnits } from '../../src/utils/helpers.js';
+import { createAssetData } from '../../src/utils/assetModel.js';
 
 const Dapp = "Wallet";
 const WANSCAN_URL_BASE = "https://www.wanscan.org/address/";

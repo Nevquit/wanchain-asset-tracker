@@ -2,7 +2,7 @@
 
 // 注意：导入路径已更新，使用 ../ 来访问上一级目录的模块
 import { getStoremanAssets } from '../services/protocols/storeman.js';
-import { IWAN_CONFIG } from '../config/shared.js';
+import { IWAN_CONFIG } from '../src/config/shared.js';
 
 // --- 配置信息 ---
 // 使用一个已知的 Wanchain 地址进行测试
