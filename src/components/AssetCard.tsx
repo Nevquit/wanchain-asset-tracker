@@ -1,66 +1,51 @@
-// src/components/AssetCard.tsx
-import React from 'react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
+"use client";
 
-// Define a type for the asset prop
-interface Asset {
-  DappName: string;
-  asset: string;
-  amount: string;
-  [key: string]: any; // Allow other properties
-}
+import { useState } from 'react';
+import { Copy, Check } from 'lucide-react';
 
 interface AssetCardProps {
-  asset: Asset;
+  icon: string;
+  name: string;
+  balance: string;
+  price: string;
+  value: string;
+  address: string;
 }
 
-const AssetCard: React.FC<AssetCardProps> = ({ asset }) => {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>{asset.DappName}: {asset.asset}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p>Amount: {asset.amount}</p>
-        <Accordion type="single" collapsible>
-          <AccordionItem value="item-1">
-            <AccordionTrigger>View Details</AccordionTrigger>
-            <AccordionContent>
-              <Table>
-                <TableBody>
-                  {Object.entries(asset.extra || {}).map(([key, value]) => (
-                    <TableRow key={key}>
-                      <TableCell className="font-medium">{key}</TableCell>
-                      <TableCell>{String(value)}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </CardContent>
-    </Card>
-  );
-};
+export function AssetCard({ icon, name, balance, price, value, address }: AssetCardProps) {
+  const [isCopied, setIsCopied] = useState(false);
 
-export default AssetCard;
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(address);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+    }
+  };
+
+  return (
+    <div className="bg-gray-800/50 backdrop-blur-sm p-4 rounded-lg border border-gray-700 w-full max-w-sm">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center">
+          <img src={icon} alt={`${name} icon`} className="w-10 h-10 mr-4 rounded-full" />
+          <div>
+            <p className="font-bold text-lg">{name}</p>
+            <p className="text-sm text-gray-400">{balance}</p>
+          </div>
+        </div>
+        <div className="text-right">
+          <p className="font-bold text-lg">{value}</p>
+          <p className="text-sm text-gray-400">{price}</p>
+        </div>
+      </div>
+      <div className="mt-4 pt-2 border-t border-gray-700 flex items-center justify-between">
+        <p className="text-xs text-gray-500 font-mono truncate mr-2">{address}</p>
+        <button onClick={handleCopy} className="text-gray-400 hover:text-white">
+          {isCopied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+        </button>
+      </div>
+    </div>
+  );
+}
