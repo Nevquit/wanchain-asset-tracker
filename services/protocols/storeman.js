@@ -1,7 +1,7 @@
 // services/protocols/storeman.js
 // 修正版本：所有资产都使用统一的 DappName "Storeman"
 
-import { ethers } from 'ethers';
+import { toBigInt } from 'ethers';
 import IWAN from 'iwan-sdk';
 import { IWAN_CONFIG } from '../../config/shared.js';
 import { formatUnits } from '../../utils/helpers.js';
@@ -40,10 +40,10 @@ function accumulateStoremanValues(records) {
     if (Array.isArray(records)) {
         for (const record of records) {
             if (record.deposit && record.deposit !== '0') {
-                deposit += ethers.toBigInt(record.deposit);
+                deposit += toBigInt(record.deposit);
             }
             if (record.incentive && record.incentive !== '0') {
-                incentive += ethers.toBigInt(record.incentive);
+                incentive += toBigInt(record.incentive);
             }
         }
     }

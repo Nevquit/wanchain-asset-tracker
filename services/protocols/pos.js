@@ -1,7 +1,7 @@
 // services/protocols/pos.js
 // PoS 协议资产查询：只统计委托和质押金额，不包含激励/奖励部分。
 
-import { ethers } from 'ethers';
+import { toBigInt } from 'ethers';
 import IWAN from 'iwan-sdk';
 import { IWAN_CONFIG } from '../../config/shared.js';
 import { formatUnits } from '../../utils/helpers.js';
@@ -44,7 +44,7 @@ function accumulatePoSValues(records) {
 
             // 1. 累加自身质押/委托的 amount 字段
             if (record.amount && record.amount !== '0') {
-                deposit += ethers.toBigInt(record.amount);
+                deposit += toBigInt(record.amount);
             }
         }
 

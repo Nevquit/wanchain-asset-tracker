@@ -3,7 +3,14 @@ import { JsonRpcProvider } from 'ethers';
 
 // Wanchain RPC 配置
 const WANCHAIN_RPC_URL = process.env.WANCHAIN_RPC_URL || 'https://gwan-ssl.wandevs.org:56891';
-export const PROVIDER = new JsonRpcProvider(WANCHAIN_RPC_URL);
+
+/**
+ * Returns a new instance of JsonRpcProvider.
+ * This avoids issues with Next.js server-side compilation.
+ */
+export function getProvider() {
+    return new JsonRpcProvider(WANCHAIN_RPC_URL);
+}
 
 // 通用 ERC20 ABI (所有协议都需要)
 export const ERC20_ABI = [
@@ -19,8 +26,3 @@ export const IWAN_CONFIG = {
     get URL() { return process.env.IWAN_RPC_URL || "api.wanchain.org"; },
     PORT: 8443,
 };
-
-/**
- * 资产数据结构定义 (保留在共享层)
- * @typedef {{asset: string, type: string, amount: string, contract: string}} AssetData
- */

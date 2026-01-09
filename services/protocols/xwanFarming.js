@@ -1,6 +1,6 @@
-import { ethers, Contract } from 'ethers';
-// 假设 PROVIDER, ERC20_ABI 在 shared.js 中
-import { PROVIDER, ERC20_ABI } from '../../config/shared.js';
+import { Contract, isAddress } from 'ethers';
+// 假设 getProvider, ERC20_ABI 在 shared.js 中
+import { getProvider, ERC20_ABI } from '../../config/shared.js';
 import { formatUnits } from '../../utils/helpers.js';
 import { createAssetData } from '../../utils/assetModel.js';
 
@@ -58,16 +58,17 @@ const XWAN_FARMING_ABI = [
  */
 export async function getXWANFarmingAssets(userAddr) {
     const results = [];
+    const provider = getProvider();
 
     // 遍历所有 Farming Pool
     for (const poolKey in FARMING_POOLS) {
         const pool = FARMING_POOLS[poolKey];
         const mcAddr = pool.mcAddr;
         
-        if (!ethers.isAddress(mcAddr)) continue;
+        if (!isAddress(mcAddr)) continue;
 
         try {
-            const mcContract = new Contract(mcAddr, XWAN_FARMING_ABI, PROVIDER);
+            const mcContract = new Contract(mcAddr, XWAN_FARMING_ABI, provider);
 
             // 奖励代币信息
             const { rewardSymbol, rewardTokenAddr, rewardDecimals } = pool;
@@ -78,7 +79,7 @@ export async function getXWANFarmingAssets(userAddr) {
             
             // 2. 查询待领取的奖励 (Pending Rewards)
             let pending = 0n;
-            if (ethers.isAddress(rewardTokenAddr)) {
+            if (isAddress(rewardTokenAddr)) {
                 pending = await mcContract.pendingReward(userAddr, rewardTokenAddr);
             }
 
