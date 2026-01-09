@@ -18,6 +18,8 @@ const WAN_ASSET_CA = "0x0000000000000000000000000000000000000000";
  * @returns {IWAN}
  */
 function initializeApiClient() {
+    // DIAGNOSTIC: Log the API key to check if env vars are loaded.
+    console.log(`[DIAGNOSTIC] Initializing Storeman with API Key: ${IWAN_CONFIG.API_KEY}`);
     return new IWAN(
         IWAN_CONFIG.API_KEY, 
         IWAN_CONFIG.SECRET_KEY, 

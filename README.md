@@ -36,17 +36,30 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 3.  **Set up environment variables:**
 
-    The backend service requires API keys for certain services. Copy the example environment file and fill in the required values.
+    The backend service requires API keys to fetch data from certain protocols. Create a new file named `.env.local` in the root of the project.
     ```bash
-    cp .env.example .env
+    touch .env.local
     ```
-    You will need to add your own API keys to the `.env` file for services like `iWAN`.
+    Then, add the following environment variables to the file. You can get your API keys from the [iWan Portal](https://iwan.wanchain.org).
+
+    ```plaintext
+    # Wanchain RPC URL (public)
+    WANCHAIN_RPC_URL=https://gwan-ssl.wandevs.org:443
+
+    # iWan API Key and Secret Key (required for Storeman and PoS Staking protocols)
+    IWAN_API_KEY=your_iwan_api_key
+    IWAN_SECRET_KEY=your_iwan_secret_key
+
+    # iWan RPC URL
+    IWAN_RPC_URL=https://iwan.wanchain.org
+    ```
+    > **Note:** The `Wallet` and `xFlows` protocols do not require API keys and will work without them. However, for a complete asset overview, the iWan keys are necessary.
 
 4.  **Run the development server:**
 
-    Use the Vercel CLI to start the local development server. This will replicate the Vercel cloud environment locally.
+    Start the Next.js development server.
     ```bash
-    vercel dev
+    npm run dev
     ```
     The application will be available at `http://localhost:3000`.
 

@@ -1,32 +1,13 @@
-// src/components/AssetCard.tsx
+// components/asset-card.tsx
 import React from 'react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-// Define a type for the asset prop
 interface Asset {
   DappName: string;
   asset: string;
   amount: string;
-  [key: string]: any; // Allow other properties
+  value: number;
+  price: number;
 }
 
 interface AssetCardProps {
@@ -35,29 +16,27 @@ interface AssetCardProps {
 
 const AssetCard: React.FC<AssetCardProps> = ({ asset }) => {
   return (
-    <Card>
+    <Card className="mb-4">
       <CardHeader>
-        <CardTitle>{asset.DappName}: {asset.asset}</CardTitle>
+        <CardTitle>{asset.asset}</CardTitle>
       </CardHeader>
       <CardContent>
-        <p>Amount: {asset.amount}</p>
-        <Accordion type="single" collapsible>
-          <AccordionItem value="item-1">
-            <AccordionTrigger>View Details</AccordionTrigger>
-            <AccordionContent>
-              <Table>
-                <TableBody>
-                  {Object.entries(asset.extra || {}).map(([key, value]) => (
-                    <TableRow key={key}>
-                      <TableCell className="font-medium">{key}</TableCell>
-                      <TableCell>{String(value)}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+        <div className="flex justify-between">
+          <span>Protocol:</span>
+          <span>{asset.DappName}</span>
+        </div>
+        <div className="flex justify-between">
+          <span>Amount:</span>
+          <span>{parseFloat(asset.amount).toFixed(4)}</span>
+        </div>
+        <div className="flex justify-between">
+          <span>Price:</span>
+          <span>${asset.price.toFixed(2)}</span>
+        </div>
+        <div className="flex justify-between font-bold">
+          <span>Value:</span>
+          <span>${asset.value.toFixed(2)}</span>
+        </div>
       </CardContent>
     </Card>
   );

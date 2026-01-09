@@ -17,8 +17,8 @@ export async function GET(request: Request) {
 
   try {
     const results = await fetchAllAssets(address);
+    // Restore the original response structure that the frontend expects
     return NextResponse.json({
-      status: 200,
       assets: results.assets,
       failed_protocols: results.failedProtocols
     });
