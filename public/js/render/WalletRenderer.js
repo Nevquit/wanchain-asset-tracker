@@ -1,6 +1,12 @@
 // public/js/render/WalletRenderer.js
 
-import { formatAmount, formatAddress, formatUSD, getDappUrl, renderSymbolIcon } from './renderUtils.js';
+import {
+  formatAmount,
+  formatAddress,
+  formatUSD,
+  getDappUrl,
+  renderSymbolIcon,
+} from "./renderUtils.js";
 
 /**
  * Renders a single asset card for the wallet view.
@@ -8,19 +14,26 @@ import { formatAmount, formatAddress, formatUSD, getDappUrl, renderSymbolIcon } 
  * @returns {string} - The HTML string for the asset card.
  */
 function renderWalletAssetCard(asset) {
-    const { asset: assetSymbol, amount, asset_ca, extra, usdValue, usdPrice } = asset;
-    const { type } = extra || {};
+  const {
+    asset: assetSymbol,
+    amount,
+    asset_ca,
+    extra,
+    usdValue,
+    usdPrice,
+  } = asset;
+  const { type } = extra || {};
 
-    const priceDisplay = usdPrice > 0 ? formatUSD(usdPrice) : 'N/A';
-    const valueDisplay = usdValue > 0 ? formatUSD(usdValue) : 'N/A';
+  const priceDisplay = usdPrice > 0 ? formatUSD(usdPrice) : "N/A";
+  const valueDisplay = usdValue > 0 ? formatUSD(usdValue) : "N/A";
 
-    return `
+  return `
         <div class="asset-card-wallet">
             <div class="asset-info">
                 ${renderSymbolIcon(assetSymbol, asset_ca)}
                 <div class="asset-name">
                     <span class="font-semibold">${assetSymbol}</span>
-                    <span class="text-xs text-gray-500">${type || 'Token'}</span>
+                    <span class="text-xs text-gray-500">${type || "Token"}</span>
                 </div>
             </div>
             <div class="asset-balance">
@@ -47,16 +60,19 @@ function renderWalletAssetCard(asset) {
  * @returns {string} - The HTML string for the Wallet group.
  */
 export function renderDappGroup(dappName, assets) {
-    if (!assets || assets.length === 0) {
-        return '';
-    }
+  if (!assets || assets.length === 0) {
+    return "";
+  }
 
-    const dappUrl = getDappUrl(assets);
-    const dappTotalValue = assets.reduce((sum, asset) => sum + (asset.usdValue || 0), 0);
+  const dappUrl = getDappUrl(assets);
+  const dappTotalValue = assets.reduce(
+    (sum, asset) => sum + (asset.usdValue || 0),
+    0,
+  );
 
-    const assetCardsHtml = assets.map(renderWalletAssetCard).join('');
+  const assetCardsHtml = assets.map(renderWalletAssetCard).join("");
 
-    return `
+  return `
         <div class="dapp-group-wallet" data-dapp-name="${dappName}">
             <div class="dapp-header-wallet">
                 <h2 class="dapp-name">${dappName}</h2>
@@ -65,7 +81,7 @@ export function renderDappGroup(dappName, assets) {
                         <i class="fa-solid fa-sack-dollar"></i>
                         <span>${formatUSD(dappTotalValue)}</span>
                     </div>
-                    ${dappUrl ? `<a href="${dappUrl}" target="_blank" class="dapp-link">View on Wanscan <i class="fa-solid fa-arrow-up-right-from-square"></i></a>` : ''}
+                    ${dappUrl ? `<a href="${dappUrl}" target="_blank" class="dapp-link">View on Wanscan <i class="fa-solid fa-arrow-up-right-from-square"></i></a>` : ""}
                 </div>
             </div>
             <div class="assets-container-wallet">

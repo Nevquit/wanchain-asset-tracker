@@ -1,28 +1,35 @@
 // config/shared.js
-import { JsonRpcProvider } from 'ethers';
+import { JsonRpcProvider } from "ethers";
 
 // Wanchain RPC 配置
-const WANCHAIN_RPC_URL = process.env.WANCHAIN_RPC_URL || 'https://gwan-ssl.wandevs.org:56891';
+const WANCHAIN_RPC_URL =
+  process.env.WANCHAIN_RPC_URL || "https://gwan-ssl.wandevs.org:56891";
 
 /**
  * Returns a new instance of JsonRpcProvider.
  * This avoids issues with Next.js server-side compilation.
  */
 export function getProvider() {
-    return new JsonRpcProvider(WANCHAIN_RPC_URL);
+  return new JsonRpcProvider(WANCHAIN_RPC_URL);
 }
 
 // 通用 ERC20 ABI (所有协议都需要)
 export const ERC20_ABI = [
-    "function balanceOf(address owner) view returns (uint256)",
-    "function decimals() view returns (uint8)",
-    "function symbol() view returns (string)"
+  "function balanceOf(address owner) view returns (uint256)",
+  "function decimals() view returns (uint8)",
+  "function symbol() view returns (string)",
 ];
 
 // iWAN SDK 配置 (作为通用配置，因为它可能被多个协议依赖)
 export const IWAN_CONFIG = {
-    get API_KEY() { return process.env.IWAN_API_KEY || 'YOUR_DEFAULT_API_KEY'; },
-    get SECRET_KEY() { return process.env.IWAN_SECRET_KEY || 'YOUR_DEFAULT_SECRET_KEY'; },
-    get URL() { return process.env.IWAN_RPC_URL || "api.wanchain.org"; },
-    PORT: 8443,
+  get API_KEY() {
+    return process.env.IWAN_API_KEY || "YOUR_DEFAULT_API_KEY";
+  },
+  get SECRET_KEY() {
+    return process.env.IWAN_SECRET_KEY || "YOUR_DEFAULT_SECRET_KEY";
+  },
+  get URL() {
+    return process.env.IWAN_RPC_URL || "api.wanchain.org";
+  },
+  PORT: 8443,
 };

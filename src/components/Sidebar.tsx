@@ -1,17 +1,24 @@
 "use client";
 
-import { useState } from 'react';
-import { Network, Landmark, Repeat, Briefcase, Copy, Check } from 'lucide-react';
+import { useState } from "react";
+import {
+  Network,
+  Landmark,
+  Repeat,
+  Briefcase,
+  Copy,
+  Check,
+} from "lucide-react";
 
 const protocols = [
-  { name: 'Wallet', icon: Briefcase },
-  { name: 'XFlows', icon: Repeat },
-  { name: 'PoS', icon: Network },
-  { name: 'Storeman', icon: Landmark },
+  { name: "Wallet", icon: Briefcase },
+  { name: "XFlows", icon: Repeat },
+  { name: "PoS", icon: Network },
+  { name: "Storeman", icon: Landmark },
 ];
 
 export function Sidebar() {
-  const [activeProtocol, setActiveProtocol] = useState('Wallet');
+  const [activeProtocol, setActiveProtocol] = useState("Wallet");
   const [isCopied, setIsCopied] = useState(false);
   const donateAddress = "0x59F35bAAE8AD7E9991aC2F6a8ae53468726B28E2";
 
@@ -21,7 +28,7 @@ export function Sidebar() {
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000); // Reset icon after 2 seconds
     } catch (err) {
-      console.error('Failed to copy text: ', err);
+      console.error("Failed to copy text: ", err);
     }
   };
 
@@ -40,8 +47,8 @@ export function Sidebar() {
                   onClick={() => setActiveProtocol(protocol.name)}
                   className={`w-full flex items-center justify-between p-2 rounded-md text-left transition-colors ${
                     activeProtocol === protocol.name
-                      ? 'bg-blue-600 text-white'
-                      : 'hover:bg-gray-700'
+                      ? "bg-blue-600 text-white"
+                      : "hover:bg-gray-700"
                   }`}
                 >
                   <div className="flex items-center">
@@ -60,8 +67,15 @@ export function Sidebar() {
           <p className="text-xs text-gray-300 font-mono truncate mr-2">
             {donateAddress}
           </p>
-          <button onClick={handleCopy} className="text-gray-400 hover:text-white transition-colors">
-            {isCopied ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+          <button
+            onClick={handleCopy}
+            className="text-gray-400 hover:text-white transition-colors"
+          >
+            {isCopied ? (
+              <Check className="w-4 h-4 text-green-500" />
+            ) : (
+              <Copy className="w-4 h-4" />
+            )}
           </button>
         </div>
       </div>

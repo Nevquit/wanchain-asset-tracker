@@ -3,233 +3,240 @@
 /* ==================================== */
 
 :root {
-    /* Colors */
-    --color-primary: #1E90FF;       /* DodgerBlue */
-    --color-primary-dark: #1C86EE;   /* DodgerBlue2 */
-    --color-accent: #FFD700;        /* Gold */
-    --background-light: #F0F8FF;    /* AliceBlue */
-    --background-card: #FFFFFF;
-    --border-color: #E0FFFF;        /* LightCyan */
-    --text-dark: #2F4F4F;           /* DarkSlateGray */
-    --text-muted: #708090;          /* SlateGray */
-    --success-color: #32CD32;       /* LimeGreen */
-    --error-color: #FF6347;         /* Tomato */
-    --info-color: #87CEEB;          /* SkyBlue */
+  /* Colors */
+  --color-primary: #1e90ff; /* DodgerBlue */
+  --color-primary-dark: #1c86ee; /* DodgerBlue2 */
+  --color-accent: #ffd700; /* Gold */
+  --background-light: #f0f8ff; /* AliceBlue */
+  --background-card: #ffffff;
+  --border-color: #e0ffff; /* LightCyan */
+  --text-dark: #2f4f4f; /* DarkSlateGray */
+  --text-muted: #708090; /* SlateGray */
+  --success-color: #32cd32; /* LimeGreen */
+  --error-color: #ff6347; /* Tomato */
+  --info-color: #87ceeb; /* SkyBlue */
 
-    /* Typography */
-    --font-heading: 'Poppins', sans-serif;
-    --font-body: 'Roboto', sans-serif;
-    --font-monospace: 'Roboto Mono', monospace; 
+  /* Typography */
+  --font-heading: "Poppins", sans-serif;
+  --font-body: "Roboto", sans-serif;
+  --font-monospace: "Roboto Mono", monospace;
 
-    /* Spacing and Radius */
-    --spacing-xs: 4px;
-    --spacing-small: 8px;
-    --spacing-medium: 16px;
-    --spacing-large: 24px;
-    --spacing-xl: 32px;
+  /* Spacing and Radius */
+  --spacing-xs: 4px;
+  --spacing-small: 8px;
+  --spacing-medium: 16px;
+  --spacing-large: 24px;
+  --spacing-xl: 32px;
 
-    --radius-small: 4px;
-    --radius-medium: 8px;
-    --radius-large: 12px;
+  --radius-small: 4px;
+  --radius-medium: 8px;
+  --radius-large: 12px;
 
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-medium:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 body {
-    background-color: var(--background-light);
-    color: var(--text-dark);
-    font-family: var(--font-body);
-    line-height: 1.6;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+  background-color: var(--background-light);
+  color: var(--text-dark);
+  font-family: var(--font-body);
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
 
 /* ==================================== */
 /* 1. Global Layout & Typography */
 /* ==================================== */
 .header {
-    background-color: var(--background-card);
-    padding: var(--spacing-medium) 0;
-    border-bottom: 1px solid var(--border-color);
-    box-shadow: var(--shadow-sm);
+  background-color: var(--background-card);
+  padding: var(--spacing-medium) 0;
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
 }
 
 .header .container {
-    display: flex;
-    align-items: center;
-    margin: 0 auto;
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
 }
 
 .logo {
-    height: 40px;
-    margin-right: var(--spacing-medium);
+  height: 40px;
+  margin-right: var(--spacing-medium);
 }
 
 .header-title {
-    font-family: var(--font-heading);
-    font-size: 1.5em;
-    font-weight: 600;
-    color: var(--text-dark);
+  font-family: var(--font-heading);
+  font-size: 1.5em;
+  font-weight: 600;
+  color: var(--text-dark);
 }
 .container {
-    max-width: 1280px;
-    margin: var(--spacing-xl) auto;
-    padding: 0 var(--spacing-medium);
+  max-width: 1280px;
+  margin: var(--spacing-xl) auto;
+  padding: 0 var(--spacing-medium);
 }
 
 .main-layout {
-    display: flex;
-    gap: var(--spacing-large);
+  display: flex;
+  gap: var(--spacing-large);
 }
 
 .sidebar {
-    width: 250px;
-    flex-shrink: 0;
+  width: 250px;
+  flex-shrink: 0;
 }
 
 .main-content {
-    flex-grow: 1;
+  flex-grow: 1;
 }
 
 .sidebar-menu {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-small);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-small);
 }
 
 .sidebar-item {
-    padding: var(--spacing-small) var(--spacing-medium);
-    border-radius: var(--radius-medium);
-    text-decoration: none;
-    color: var(--text-dark);
-    transition: background-color 0.2s, color 0.2s;
+  padding: var(--spacing-small) var(--spacing-medium);
+  border-radius: var(--radius-medium);
+  text-decoration: none;
+  color: var(--text-dark);
+  transition:
+    background-color 0.2s,
+    color 0.2s;
 }
 
 .sidebar-item:hover {
-    background-color: var(--background-card);
+  background-color: var(--background-card);
 }
 
 .sidebar-item.active {
-    background-color: var(--color-primary);
-    color: white;
-    font-weight: 500;
+  background-color: var(--color-primary);
+  color: white;
+  font-weight: 500;
 }
 
 .footer {
-    background-color: var(--background-card);
-    padding: var(--spacing-large) 0;
-    margin-top: var(--spacing-xl);
-    border-top: 1px solid var(--border-color);
-    color: var(--text-muted);
-    font-size: 0.9em;
+  background-color: var(--background-card);
+  padding: var(--spacing-large) 0;
+  margin-top: var(--spacing-xl);
+  border-top: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-size: 0.9em;
 }
 
 .footer .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 0 auto;
-    flex-wrap: wrap;
-    gap: var(--spacing-medium);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: var(--spacing-medium);
 }
 
 .footer-links a {
-    color: var(--text-muted);
-    text-decoration: none;
-    margin-left: var(--spacing-medium);
-    transition: color 0.2s;
+  color: var(--text-muted);
+  text-decoration: none;
+  margin-left: var(--spacing-medium);
+  transition: color 0.2s;
 }
 
 .footer-links a:hover {
-    color: var(--color-primary);
+  color: var(--color-primary);
 }
-
 
 /* ==================================== */
 /* 2. Input and Buttons */
 /* ==================================== */
 
 .search-form {
-    display: flex;
-    gap: var(--spacing-medium);
-    margin-bottom: var(--spacing-xl);
-    align-items: center;
-    background-color: var(--background-card);
-    padding: var(--spacing-medium);
-    border-radius: var(--radius-medium);
-    border: 1px solid var(--border-color);
+  display: flex;
+  gap: var(--spacing-medium);
+  margin-bottom: var(--spacing-xl);
+  align-items: center;
+  background-color: var(--background-card);
+  padding: var(--spacing-medium);
+  border-radius: var(--radius-medium);
+  border: 1px solid var(--border-color);
 }
 
 #addressInput {
-    flex-grow: 1;
-    padding: var(--spacing-small) var(--spacing-medium);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-medium);
-    font-size: 1em;
-    font-family: var(--font-body);
+  flex-grow: 1;
+  padding: var(--spacing-small) var(--spacing-medium);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-medium);
+  font-size: 1em;
+  font-family: var(--font-body);
 }
 
 .search-form button {
-    padding: var(--spacing-small) var(--spacing-medium);
-    border-radius: var(--radius-medium);
-    font-size: 1em;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s, box-shadow 0.2s;
-    white-space: nowrap; /* Prevent button text from wrapping */
+  padding: var(--spacing-small) var(--spacing-medium);
+  border-radius: var(--radius-medium);
+  font-size: 1em;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    box-shadow 0.2s;
+  white-space: nowrap; /* Prevent button text from wrapping */
 }
 
 #fetchButton {
-    background-color: var(--color-primary);
-    color: white;
-    border: none;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
 }
 
 #fetchButton:hover {
-    background-color: var(--color-primary-dark);
-    box-shadow: var(--shadow-sm);
+  background-color: var(--color-primary-dark);
+  box-shadow: var(--shadow-sm);
 }
 
 #clearHistoryButton {
-    background-color: var(--color-accent);
-    color: white;
-    border: none;
-    padding: var(--spacing-small); /* Smaller padding for icon button */
-    font-size: 1.2em;
+  background-color: var(--color-accent);
+  color: white;
+  border: none;
+  padding: var(--spacing-small); /* Smaller padding for icon button */
+  font-size: 1.2em;
 }
 
 #clearHistoryButton:hover {
-    background-color: #d97706; /* Amber-700 */
+  background-color: #d97706; /* Amber-700 */
 }
 
 /* Status Messages */
-#loading, #error, .warning-box {
-    margin: var(--spacing-medium) 0;
-    padding: var(--spacing-medium);
-    border-radius: var(--radius-medium);
-    text-align: center;
-    font-weight: 500;
+#loading,
+#error,
+.warning-box {
+  margin: var(--spacing-medium) 0;
+  padding: var(--spacing-medium);
+  border-radius: var(--radius-medium);
+  text-align: center;
+  font-weight: 500;
 }
 
 #loading {
-    background-color: #eff6ff; /* Blue-50 */
-    color: #2563eb; /* Blue-600 */
-    border: 1px solid #bfdbfe; /* Blue-200 */
+  background-color: #eff6ff; /* Blue-50 */
+  color: #2563eb; /* Blue-600 */
+  border: 1px solid #bfdbfe; /* Blue-200 */
 }
 
-#error, .warning-box {
-    background-color: #fee2e2; /* Red-100 */
-    color: var(--error-color);
-    border: 1px solid #fca5a5; /* Red-300 */
+#error,
+.warning-box {
+  background-color: #fee2e2; /* Red-100 */
+  color: var(--error-color);
+  border: 1px solid #fca5a5; /* Red-300 */
 }
 
 .warning-box {
-    text-align: left;
+  text-align: left;
 }
 
 /* ==================================== */
@@ -238,98 +245,98 @@ body {
 
 /* Total Value Display Box */
 #totalValueDisplay {
-    background-color: var(--background-card);
-    border: 2px solid var(--success-color);
-    border-radius: var(--radius-large);
-    box-shadow: var(--shadow-medium);
-    padding: var(--spacing-large);
-    text-align: center;
-    margin-bottom: var(--spacing-xl);
-    font-family: var(--font-body);
+  background-color: var(--background-card);
+  border: 2px solid var(--success-color);
+  border-radius: var(--radius-large);
+  box-shadow: var(--shadow-medium);
+  padding: var(--spacing-large);
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+  font-family: var(--font-body);
 }
 
 #totalValueDisplay span {
-    display: inline-block;
+  display: inline-block;
 }
 
 #totalValueDisplay span:last-child {
-    font-size: 2.2em;
-    font-weight: 700;
-    color: var(--success-color);
-    margin-top: var(--spacing-small);
-    font-family: var(--font-monospace);
+  font-size: 2.2em;
+  font-weight: 700;
+  color: var(--success-color);
+  margin-top: var(--spacing-small);
+  font-family: var(--font-monospace);
 }
 
 /* DApp Group Header (Standardized) */
 .dapp-group {
-    margin-top: var(--spacing-xl);
+  margin-top: var(--spacing-xl);
 }
 
 .dapp-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--spacing-medium) var(--spacing-large);
-    background-color: var(--background-card); 
-    border-radius: var(--radius-large);
-    box-shadow: var(--shadow-sm); /* Subtle shadow for the header */
-    margin-bottom: var(--spacing-medium);
-    border: 1px solid var(--border-color);
-    /* For smaller screens, header content can wrap or adjust */
-    flex-wrap: wrap; 
-    gap: var(--spacing-medium);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-medium) var(--spacing-large);
+  background-color: var(--background-card);
+  border-radius: var(--radius-large);
+  box-shadow: var(--shadow-sm); /* Subtle shadow for the header */
+  margin-bottom: var(--spacing-medium);
+  border: 1px solid var(--border-color);
+  /* For smaller screens, header content can wrap or adjust */
+  flex-wrap: wrap;
+  gap: var(--spacing-medium);
 }
 
 .dapp-name {
-    font-size: 1.4em;
-    font-weight: 600;
-    font-family: var(--font-heading);
-    color: var(--text-dark);
+  font-size: 1.4em;
+  font-weight: 600;
+  font-family: var(--font-heading);
+  color: var(--text-dark);
 }
 
 .header-right-side {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-medium);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-medium);
 }
 
 .total-usd-value {
-    font-size: 1.2em; /* Adjusted to be slightly smaller than the main total, but prominent */
-    font-weight: 700;
-    color: var(--success-color);
-    font-family: var(--font-monospace);
-    /* Flex item to ensure alignment */
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
+  font-size: 1.2em; /* Adjusted to be slightly smaller than the main total, but prominent */
+  font-weight: 700;
+  color: var(--success-color);
+  font-family: var(--font-monospace);
+  /* Flex item to ensure alignment */
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
 }
 
 .total-placeholder {
-    color: var(--text-muted); /* Mute color if value is zero */
+  color: var(--text-muted); /* Mute color if value is zero */
 }
 
 .dapp-link {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    color: var(--color-primary);
-    font-weight: 500;
-    text-decoration: none;
-    transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  color: var(--color-primary);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s;
 }
 
 .dapp-link:hover {
-    color: var(--color-primary-dark);
-    text-decoration: underline;
+  color: var(--color-primary-dark);
+  text-decoration: underline;
 }
 
 /* Card specific styling for consistency */
 .asset-card {
-    /* Use Tailwind classes inside the renderer, but define base styles here for consistency */
-    background-color: var(--background-card);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-large);
-    box-shadow: var(--shadow-medium);
+  /* Use Tailwind classes inside the renderer, but define base styles here for consistency */
+  background-color: var(--background-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-large);
+  box-shadow: var(--shadow-medium);
 }
 
 /* ==================================== */
@@ -337,318 +344,316 @@ body {
 /* ==================================== */
 
 .dapp-group-default {
-    margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
 }
 
 .dapp-header-default {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: var(--spacing-medium);
-    border-bottom: 2px solid var(--border-color);
-    margin-bottom: var(--spacing-medium);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: var(--spacing-medium);
+  border-bottom: 2px solid var(--border-color);
+  margin-bottom: var(--spacing-medium);
 }
 
 .dapp-header-default .dapp-name {
-    font-size: 1.5em;
-    font-weight: 600;
+  font-size: 1.5em;
+  font-weight: 600;
 }
 
 .dapp-header-default .dapp-meta {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-large);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-large);
 }
 
 .dapp-header-default .total-value {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-small);
-    font-size: 1.2em;
-    font-weight: 500;
-    color: var(--success-color);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  font-size: 1.2em;
+  font-weight: 500;
+  color: var(--success-color);
 }
 
 .assets-container-default {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--spacing-medium);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-medium);
 }
 
 .asset-card-default {
-    background-color: var(--background-card);
-    border-radius: var(--radius-medium);
-    border: 1px solid var(--border-color);
-    padding: var(--spacing-medium);
-    display: grid;
-    grid-template-columns: 1fr auto;
-    grid-template-rows: auto auto;
-    gap: var(--spacing-medium);
-    box-shadow: var(--shadow-sm);
-    transition: box-shadow 0.2s;
+  background-color: var(--background-card);
+  border-radius: var(--radius-medium);
+  border: 1px solid var(--border-color);
+  padding: var(--spacing-medium);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  gap: var(--spacing-medium);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s;
 }
 
-.asset-balance, .asset-value {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+.asset-balance,
+.asset-value {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .asset-card-default:hover {
-    box-shadow: var(--shadow-medium);
+  box-shadow: var(--shadow-medium);
 }
 
 .asset-info {
-    grid-column: 1 / 2;
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-small);
+  grid-column: 1 / 2;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
 }
 
 .asset-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 600;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
 }
 
 .asset-name {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .asset-balance {
-    grid-column: 2 / 3;
-    text-align: right;
+  grid-column: 2 / 3;
+  text-align: right;
 }
 
 .asset-value {
-    grid-column: 2 / 3;
-    text-align: right;
+  grid-column: 2 / 3;
+  text-align: right;
 }
 
 .asset-contract {
-    grid-column: 1 / 3;
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-small);
-    padding-top: var(--spacing-medium);
-    border-top: 1px solid var(--border-color);
+  grid-column: 1 / 3;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
+  padding-top: var(--spacing-medium);
+  border-top: 1px solid var(--border-color);
 }
-
 
 /* ==================================== */
 /* 3.2. Wallet Renderer Styles */
 /* ==================================== */
 
 .dapp-group-wallet {
-    margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
 }
 
 .dapp-header-wallet {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: var(--spacing-medium);
-    border-bottom: 2px solid var(--border-color);
-    margin-bottom: var(--spacing-medium);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: var(--spacing-medium);
+  border-bottom: 2px solid var(--border-color);
+  margin-bottom: var(--spacing-medium);
 }
 
 .assets-container-wallet {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--spacing-medium);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-medium);
 }
 
 .asset-card-wallet {
-    background-color: var(--background-card);
-    border-radius: var(--radius-medium);
-    border: 1px solid var(--border-color);
-    padding: var(--spacing-medium);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--spacing-medium);
-    box-shadow: var(--shadow-sm);
+  background-color: var(--background-card);
+  border-radius: var(--radius-medium);
+  border: 1px solid var(--border-color);
+  padding: var(--spacing-medium);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-medium);
+  box-shadow: var(--shadow-sm);
 }
-
 
 /* ==================================== */
 /* 3.3. xFlows Renderer Styles */
 /* ==================================== */
 
 .dapp-group-xflows {
-    margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
 }
 
 .assets-container-xflows {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--spacing-medium);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-medium);
 }
 
 .asset-card-xflows {
-    background-color: var(--background-card);
-    border-radius: var(--radius-medium);
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-sm);
-    overflow: hidden;
+  background-color: var(--background-card);
+  border-radius: var(--radius-medium);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
 }
 
 .asset-card-xflows .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--spacing-medium);
-    background-color: var(--background-light);
-    border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-medium);
+  background-color: var(--background-light);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .asset-card-xflows .card-body {
-    padding: var(--spacing-medium);
+  padding: var(--spacing-medium);
 }
 
 .asset-card-xflows .sub-asset {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--spacing-small) 0;
-    border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-small) 0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .asset-card-xflows .sub-asset:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
-
 
 /* ==================================== */
 /* 3.4. xStake Renderer Styles */
 /* ==================================== */
 
 .dapp-group-xstake {
-    margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
 }
 
 .assets-container-xstake {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--spacing-medium);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-medium);
 }
 
 .asset-card-xstake {
-    background-color: var(--background-card);
-    border-radius: var(--radius-medium);
-    border: 1px solid var(--border-color);
-    box-shadow: var(--shadow-sm);
-    overflow: hidden;
+  background-color: var(--background-card);
+  border-radius: var(--radius-medium);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
 }
 
 .asset-card-xstake .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--spacing-medium);
-    background-color: var(--background-light);
-    border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-medium);
+  background-color: var(--background-light);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .asset-card-xstake .card-body {
-    padding: var(--spacing-medium);
+  padding: var(--spacing-medium);
 }
 
 .asset-card-xstake .sub-asset {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: var(--spacing-small) 0;
-    border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-small) 0;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .asset-card-xstake .sub-asset:last-child {
-    border-bottom: none;
+  border-bottom: none;
 }
-
 
 /* ==================================== */
 /* 3.5. Table Styles (Legacy) */
 /* ==================================== */
 
 .asset-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    background-color: var(--background-card);
-    border-radius: var(--radius-large);
-    overflow: hidden; /* For rounded corners */
-    box-shadow: var(--shadow-medium);
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background-color: var(--background-card);
+  border-radius: var(--radius-large);
+  overflow: hidden; /* For rounded corners */
+  box-shadow: var(--shadow-medium);
 }
 
-.asset-table th, .asset-table td {
-    padding: var(--spacing-medium) var(--spacing-large);
-    text-align: left;
-    border-bottom: 1px solid var(--border-color);
+.asset-table th,
+.asset-table td {
+  padding: var(--spacing-medium) var(--spacing-large);
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .asset-table th {
-    background-color: var(--background-light);
-    color: var(--text-muted);
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.9em;
+  background-color: var(--background-light);
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.9em;
 }
 
 .asset-table tbody tr:last-child td {
-    border-bottom: none;
+  border-bottom: none;
 }
 
 .asset-table tbody tr:hover {
-    background-color: #f3f4f6; /* Gray-100 */
+  background-color: #f3f4f6; /* Gray-100 */
 }
 
 .token-symbol {
-    font-weight: 600;
-    color: var(--text-dark);
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-small);
+  font-weight: 600;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-small);
 }
 
 .token-amount {
-    font-family: var(--font-monospace);
-    font-weight: 500;
+  font-family: var(--font-monospace);
+  font-weight: 500;
 }
 
 .token-value {
-    font-family: var(--font-monospace);
-    font-weight: 600;
-    color: var(--success-color);
+  font-family: var(--font-monospace);
+  font-weight: 600;
+  color: var(--success-color);
 }
 
 .contract-address-box {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    font-size: 0.9em;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: 0.9em;
 }
 
 .contract-address {
-    font-family: var(--font-monospace);
-    font-size: 0.9em;
-    color: var(--color-primary);
-    cursor: pointer;
-    user-select: none;
-    transition: color 0.2s;
+  font-family: var(--font-monospace);
+  font-size: 0.9em;
+  color: var(--color-primary);
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s;
 }
 
 .contract-address:hover {
-    color: var(--color-primary-dark);
+  color: var(--color-primary-dark);
 }
 
 .contract-address.copied {
-    color: var(--success-color);
+  color: var(--success-color);
 }
 
 /* ==================================== */
@@ -656,94 +661,104 @@ body {
 /* ==================================== */
 
 @media (max-width: 768px) {
-    h1 {
-        font-size: 2em;
-    }
-    
-    .search-form {
-        flex-direction: column;
-        align-items: stretch;
-    }
+  h1 {
+    font-size: 2em;
+  }
 
-    #addressInput, .search-form button, #clearHistoryButton {
-        width: 100%;
-    }
+  .search-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-    .dapp-header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: var(--spacing-medium);
-        gap: var(--spacing-small);
-    }
-    
-    .header-right-side {
-        flex-direction: column;
-        align-items: flex-start;
-        width: 100%;
-        gap: var(--spacing-small);
-    }
+  #addressInput,
+  .search-form button,
+  #clearHistoryButton {
+    width: 100%;
+  }
 
-    .asset-table, .asset-table thead, .asset-table tbody, .asset-table th, .asset-table td, .asset-table tr { 
-        display: block; 
-    }
-    
-    .asset-table thead {
-        display: none; /* Hide table headers (but not important for accessibility) */
-    }
-    
-    .asset-table tr { 
-        margin-bottom: var(--spacing-small);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-large);
-        overflow: hidden;
-        margin-bottom: var(--spacing-medium);
-    }
-    
-    .asset-table td {
-        border-bottom: 1px solid var(--border-color);
-        text-align: right;
-        position: relative;
-        padding-left: 50%; /* 2-column layout for mobile */
-    }
-    
-    .asset-table td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: var(--spacing-medium);
-        width: 45%;
-        padding-right: 10px;
-        white-space: nowrap;
-        text-align: left;
-        font-weight: 600;
-        color: var(--text-muted);
-    }
+  .dapp-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--spacing-medium);
+    gap: var(--spacing-small);
+  }
 
-    /* Override table column widths to be full width in mobile */
-    .symbol-header, .amount-header, .value-header, .contract-header {
-        width: 100% !important;
-    }
+  .header-right-side {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    gap: var(--spacing-small);
+  }
 
-    #totalValueDisplay span:last-child {
-        font-size: 1.8em;
-    }
+  .asset-table,
+  .asset-table thead,
+  .asset-table tbody,
+  .asset-table th,
+  .asset-table td,
+  .asset-table tr {
+    display: block;
+  }
+
+  .asset-table thead {
+    display: none; /* Hide table headers (but not important for accessibility) */
+  }
+
+  .asset-table tr {
+    margin-bottom: var(--spacing-small);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-large);
+    overflow: hidden;
+    margin-bottom: var(--spacing-medium);
+  }
+
+  .asset-table td {
+    border-bottom: 1px solid var(--border-color);
+    text-align: right;
+    position: relative;
+    padding-left: 50%; /* 2-column layout for mobile */
+  }
+
+  .asset-table td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: var(--spacing-medium);
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+
+  /* Override table column widths to be full width in mobile */
+  .symbol-header,
+  .amount-header,
+  .value-header,
+  .contract-header {
+    width: 100% !important;
+  }
+
+  #totalValueDisplay span:last-child {
+    font-size: 1.8em;
+  }
 }
 
 /* For Mobile Table Data Labels (Used in DefaultRenderer.js) */
 .table-data-label {
-    /* For consistency, align with ::before styles */
-    font-weight: 600;
-    color: var(--text-muted);
-    display: none; /* Only show on desktop */
+  /* For consistency, align with ::before styles */
+  font-weight: 600;
+  color: var(--text-muted);
+  display: none; /* Only show on desktop */
 }
 
 @media (max-width: 768px) {
-    .table-data-label {
-        display: none; /* Actually, we rely on the ::before pseudo-element */
-    }
-    /* Ensure only the important data is shown */
-    .asset-table td[data-label="Token"] {
-        font-size: 1.1em;
-        font-weight: 700;
-        color: var(--text-dark);
-    }
+  .table-data-label {
+    display: none; /* Actually, we rely on the ::before pseudo-element */
+  }
+  /* Ensure only the important data is shown */
+  .asset-table td[data-label="Token"] {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: var(--text-dark);
+  }
 }

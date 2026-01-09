@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['ethers'],
+  transpilePackages: ["ethers"],
 };
 
 export default nextConfig;

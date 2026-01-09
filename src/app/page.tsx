@@ -1,10 +1,15 @@
 // src/app/page.tsx
 "use client";
 
-import { useState, useMemo } from 'react';
-import { Sidebar } from '@/components/Sidebar';
-import { AssetCard } from '@/components/AssetCard';
-import { Search, ExternalLink, LoaderCircle, AlertTriangle } from 'lucide-react';
+import { useState } from "react";
+import { Sidebar } from "@/components/Sidebar";
+import { AssetCard } from "@/components/AssetCard";
+import {
+  Search,
+  ExternalLink,
+  LoaderCircle,
+  AlertTriangle,
+} from "lucide-react";
 
 // Define the structure of an asset based on the backend API response
 interface Asset {
@@ -27,13 +32,13 @@ interface AssetGroup {
   link?: string; // Link to the DApp
 }
 
-type LoadingState = 'idle' | 'loading' | 'success' | 'error';
+type LoadingState = "idle" | "loading" | "success" | "error";
 
 export default function HomePage() {
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState("");
   const [assetGroups, setAssetGroups] = useState<AssetGroup[]>([]);
   const [totalValue, setTotalValue] = useState(0);
-  const [loadingState, setLoadingState] = useState<LoadingState>('idle');
+  const [loadingState, setLoadingState] = useState<LoadingState>("idle");
   const [error, setError] = useState<string | null>(null);
 
   const handleFetchAssets = async () => {
@@ -41,7 +46,7 @@ export default function HomePage() {
       setError("Please enter a Wanchain address.");
       return;
     }
-    setLoadingState('loading');
+    setLoadingState("loading");
     setError(null);
     setAssetGroups([]); // Clear previous results
 
@@ -69,29 +74,35 @@ export default function HomePage() {
       });
 
       const groupedAssets = Object.values(groups);
-      const totalPortfolioValue = groupedAssets.reduce((sum, group) => sum + group.totalValue, 0);
+      const totalPortfolioValue = groupedAssets.reduce(
+        (sum, group) => sum + group.totalValue,
+        0,
+      );
 
       setAssetGroups(groupedAssets);
       setTotalValue(totalPortfolioValue);
-      setLoadingState('success');
-
-    } catch (err: any) {
-      console.error("Failed to fetch assets:", err);
-      setError(err.message);
-      setLoadingState('error');
+      setLoadingState("success");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      console.error("Failed to fetch assets:", errorMessage);
+      setError(errorMessage);
+      setLoadingState("error");
     }
   };
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       handleFetchAssets();
     }
   };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
+  const formatCurrency = (value: number | undefined | null) => {
+    if (typeof value !== "number" || isNaN(value)) {
+      return "$0.00";
+    }
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
     }).format(value);
   };
 
@@ -113,10 +124,14 @@ export default function HomePage() {
           </div>
           <button
             onClick={handleFetchAssets}
-            disabled={loadingState === 'loading'}
+            disabled={loadingState === "loading"}
             className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 text-white font-bold py-3 px-6 rounded-full transition-colors"
           >
-            {loadingState === 'loading' ? <LoaderCircle className="animate-spin" /> : 'Search'}
+            {loadingState === "loading" ? (
+              <LoaderCircle className="animate-spin" />
+            ) : (
+              "Search"
+            )}
           </button>
           <div className="text-right">
             <p className="text-gray-400">Total Portfolio Value</p>
@@ -125,35 +140,45 @@ export default function HomePage() {
         </div>
 
         {/* Dynamic content rendering based on loading state */}
-        {loadingState === 'loading' && (
+        {loadingState === "loading" && (
           <div className="flex justify-center items-center h-64">
             <LoaderCircle className="w-12 h-12 animate-spin text-blue-500" />
           </div>
         )}
 
-        {loadingState === 'error' && (
+        {loadingState === "error" && (
           <div className="flex flex-col items-center justify-center h-64 bg-red-900/20 border border-red-500/50 rounded-lg p-4">
             <AlertTriangle className="w-12 h-12 text-red-500 mb-4" />
-            <p className="text-xl font-semibold text-red-400">Failed to fetch assets</p>
+            <p className="text-xl font-semibold text-red-400">
+              Failed to fetch assets
+            </p>
             <p className="text-gray-400 mt-2">{error}</p>
           </div>
         )}
 
-        {loadingState === 'success' && assetGroups.length === 0 && (
+        {loadingState === "success" && assetGroups.length === 0 && (
           <div className="text-center h-64 flex flex-col justify-center">
-            <p className="text-2xl font-semibold">No assets found for this address.</p>
-            <p className="text-gray-400 mt-2">Try a different Wanchain address.</p>
+            <p className="text-2xl font-semibold">
+              No assets found for this address.
+            </p>
+            <p className="text-gray-400 mt-2">
+              Try a different Wanchain address.
+            </p>
           </div>
         )}
 
-        {loadingState === 'success' && assetGroups.length > 0 && (
+        {loadingState === "success" && assetGroups.length > 0 && (
           <div className="space-y-8">
-            {assetGroups.map((group) => (
-              <section key={group.protocol}>
+            {assetGroups.map((group, groupIndex) => (
+              <section key={`${group.protocol}-${groupIndex}`}>
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center">
-                    <h2 className="text-2xl font-semibold">{group.protocol}</h2>
-                    <span className="ml-4 text-lg text-gray-400">{formatCurrency(group.totalValue)}</span>
+                    <h2 className="text-2xl font-semibold">
+                      {group.protocol || "Unknown Protocol"}
+                    </h2>
+                    <span className="ml-4 text-lg text-gray-400">
+                      {formatCurrency(group.totalValue)}
+                    </span>
                   </div>
                   {group.link && (
                     <a
@@ -168,15 +193,19 @@ export default function HomePage() {
                   )}
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {group.assets.map((asset) => (
+                  {group.assets.map((asset, assetIndex) => (
                     <AssetCard
-                      key={`${asset.protocol}-${asset.name}-${asset.address}`}
+                      key={`${asset.protocol}-${asset.name}-${asset.address}-${assetIndex}`}
                       icon={asset.logo}
-                      name={asset.name}
-                      balance={typeof asset.balance === 'number' ? `${asset.balance.toFixed(4)} ${asset.name}` : `N/A ${asset.name}`}
+                      name={asset.name || "Unknown Token"}
+                      balance={
+                        typeof asset.balance === "number"
+                          ? `${asset.balance.toFixed(4)} ${asset.name || ""}`.trim()
+                          : `N/A`
+                      }
                       price={formatCurrency(asset.price)}
                       value={formatCurrency(asset.value)}
-                      address={asset.address}
+                      address={asset.address || ""}
                     />
                   ))}
                 </div>

@@ -1,71 +1,95 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Wanchain Asset Tracker</title>
     <!-- 引入 Tailwind CSS CDN：用于渲染 V3 LP NFT 资产卡片 -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- 引入 Inter 和 Roboto Mono 字体 -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="style.css">
-    
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+
     <!-- 使用 Font Awesome 图标库 for cleaner buttons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
     <!-- 注意：favicon.png 路径可能需要根据您的实际部署情况调整 -->
-    <link rel="icon" type="image/svg+xml" href="/images/logo.svg">
-</head>
-<body>
+    <link rel="icon" type="image/svg+xml" href="/images/logo.svg" />
+  </head>
+  <body>
     <header class="header">
-        <div class="container">
-            <img src="/images/logo.svg" alt="Wanchain Logo" class="logo">
-            <span class="header-title">Wanchain Asset Tracker</span>
-        </div>
+      <div class="container">
+        <img src="/images/logo.svg" alt="Wanchain Logo" class="logo" />
+        <span class="header-title">Wanchain Asset Tracker</span>
+      </div>
     </header>
 
     <div class="flex-grow container">
-        <div class="main-layout">
-            <aside id="sidebar" class="sidebar">
-                <div class="sidebar-menu">
-                    <a href="#" class="sidebar-item active" data-protocol="all">Portfolio</a>
-                </div>
-            </aside>
-            <main id="main-content" class="main-content">
-                <div class="search-form">
-                    <input type="text" id="addressInput" list="addressHistory" placeholder="Enter a Wanchain address to track assets across all protocols.">
-                    <datalist id="addressHistory"></datalist>
-                    <button id="fetchButton"><i class="fa-solid fa-magnifying-glass"></i> Query Assets</button>
-                    <button id="clearHistoryButton" title="Clear search history"><i class="fa-solid fa-trash-can"></i> Clear History</button>
-                </div>
+      <div class="main-layout">
+        <aside id="sidebar" class="sidebar">
+          <div class="sidebar-menu">
+            <a href="#" class="sidebar-item active" data-protocol="all"
+              >Portfolio</a
+            >
+          </div>
+        </aside>
+        <main id="main-content" class="main-content">
+          <div class="search-form">
+            <input
+              type="text"
+              id="addressInput"
+              list="addressHistory"
+              placeholder="Enter a Wanchain address to track assets across all protocols."
+            />
+            <datalist id="addressHistory"></datalist>
+            <button id="fetchButton">
+              <i class="fa-solid fa-magnifying-glass"></i> Query Assets
+            </button>
+            <button id="clearHistoryButton" title="Clear search history">
+              <i class="fa-solid fa-trash-can"></i> Clear History
+            </button>
+          </div>
 
-                <div id="loading" style="display: none;">
-                    <i class="fa-solid fa-spinner fa-spin"></i> Loading assets...
-                </div>
-                <div id="error" style="display: none;"></div>
+          <div id="loading" style="display: none">
+            <i class="fa-solid fa-spinner fa-spin"></i> Loading assets...
+          </div>
+          <div id="error" style="display: none"></div>
 
-                <section id="resultsContainer">
-                    <p style="text-align: center; color: var(--text-muted); margin-top: 50px;">
-                        Enter a Wanchain address above to view your decentralized portfolio.
-                    </p>
-                </section>
-            </main>
-        </div>
+          <section id="resultsContainer">
+            <p
+              style="
+                text-align: center;
+                color: var(--text-muted);
+                margin-top: 50px;
+              "
+            >
+              Enter a Wanchain address above to view your decentralized
+              portfolio.
+            </p>
+          </section>
+        </main>
+      </div>
     </div>
 
     <footer class="footer">
-        <div class="container">
-            <p>Donate 0x59F35bAAE8AD7E9991aC2F6a8ae53468726B28E2</p>
-            <div class="footer-links">
-                <a href="https://www.wanchain.org/" target="_blank">Website</a>
-                <a href="https://wanscan.org/" target="_blank">Block Explorer</a>
-            </div>
+      <div class="container">
+        <p>Donate 0x59F35bAAE8AD7E9991aC2F6a8ae53468726B28E2</p>
+        <div class="footer-links">
+          <a href="https://www.wanchain.org/" target="_blank">Website</a>
+          <a href="https://wanscan.org/" target="_blank">Block Explorer</a>
         </div>
+      </div>
     </footer>
 
     <!-- JavaScript Modules -->
     <script type="module" src="main.js"></script>
-</body>
+  </body>
 </html>

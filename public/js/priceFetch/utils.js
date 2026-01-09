@@ -1,7 +1,4 @@
-import { 
-    COINGECKO_TOKEN_MAP,
-    COINGECKO_ID_API
-} from './config.js'; // 假设 config.js 在同一目录下
+import { COINGECKO_TOKEN_MAP, COINGECKO_ID_API } from "./config.js"; // 假设 config.js 在同一目录下
 
 /**
  * 格式化数字为带逗号和美元符号的字符串。
@@ -10,14 +7,14 @@ import {
  * @returns {string} Formatted string
  */
 export function formatUSD(value) {
-    if (value <= 0 || isNaN(value)) return 'N/A (Price Feed Missing)';
-    
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    }).format(value);
+  if (value <= 0 || isNaN(value)) return "N/A (Price Feed Missing)";
+
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value);
 }
 
 /**
@@ -27,13 +24,16 @@ export function formatUSD(value) {
  * @returns {{key: string, type: 'id'} | null} Identifier object or null.
  */
 export function getPriceIdentifier(contractAddress) {
-    if (contractAddress) {
-        const lowerCaseAddress = contractAddress.toLowerCase();
-        if (COINGECKO_TOKEN_MAP[lowerCaseAddress]) {
-            return { key: COINGECKO_TOKEN_MAP[lowerCaseAddress].coingeckoId, type: 'id' };
-        }
+  if (contractAddress) {
+    const lowerCaseAddress = contractAddress.toLowerCase();
+    if (COINGECKO_TOKEN_MAP[lowerCaseAddress]) {
+      return {
+        key: COINGECKO_TOKEN_MAP[lowerCaseAddress].coingeckoId,
+        type: "id",
+      };
     }
-    return null;
+  }
+  return null;
 }
 
 /**
@@ -43,38 +43,45 @@ export function getPriceIdentifier(contractAddress) {
  * @returns {Promise<Object>} A lookup table containing prices (id -> usd_price).
  */
 export async function fetchPrices(ids) {
-    let prices = {};
-    const maxRetries = 3;
+  let prices = {};
+  const maxRetries = 3;
 
-    if (ids.size > 0) {
-        const idList = Array.from(ids).join(',');
-        
-        for (let attempt = 0; attempt < maxRetries; attempt++) {
-            try {
-                const response = await fetch(`${COINGECKO_ID_API}?ids=${idList}&vs_currencies=usd`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                
-                for (const id in data) {
-                    if (data[id] && data[id].usd) {
-                        prices[id] = data[id].usd;
-                    }
-                }
-                return prices; // Success, return results
-            } catch (e) {
-                console.warn(`Attempt ${attempt + 1} failed to fetch prices. Retrying...`, e.message);
-                if (attempt === maxRetries - 1) {
-                    console.error("Failed to fetch prices after all retries.");
-                    return prices; // Return partial or empty prices
-                }
-                // Wait 2^attempt seconds before retrying
-                await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
-            }
+  if (ids.size > 0) {
+    const idList = Array.from(ids).join(",");
+
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        const response = await fetch(
+          `${COINGECKO_ID_API}?ids=${idList}&vs_currencies=usd`,
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
+        const data = await response.json();
+
+        for (const id in data) {
+          if (data[id] && data[id].usd) {
+            prices[id] = data[id].usd;
+          }
+        }
+        return prices; // Success, return results
+      } catch (e) {
+        console.warn(
+          `Attempt ${attempt + 1} failed to fetch prices. Retrying...`,
+          e.message,
+        );
+        if (attempt === maxRetries - 1) {
+          console.error("Failed to fetch prices after all retries.");
+          return prices; // Return partial or empty prices
+        }
+        // Wait 2^attempt seconds before retrying
+        await new Promise((resolve) =>
+          setTimeout(resolve, Math.pow(2, attempt) * 1000),
+        );
+      }
     }
-    return prices;
+  }
+  return prices;
 }
 
 /**
@@ -85,24 +92,23 @@ export async function fetchPrices(ids) {
  * @returns {{usdPrice: number, usdValue: number}} Object containing the price and total value.
  */
 export function getAssetPriceAndValue(subAsset, pricesMap) {
-    const contract = subAsset.address;
-    const priceIdentifier = getPriceIdentifier(contract);
-    let usdPrice = 0;
-    let usdValue = 0;
+  const contract = subAsset.address;
+  const priceIdentifier = getPriceIdentifier(contract);
+  let usdPrice = 0;
+  let usdValue = 0;
 
-    if (priceIdentifier) {
-        // Find the price in the map, default to 0
-        usdPrice = pricesMap[priceIdentifier.key] || 0; 
-    }
-    
-    // Ensure amount is parsed as a float
-    const amount = parseFloat(subAsset.amount) || 0; 
-    
-    usdValue = amount * usdPrice;
-    
-    return { usdPrice, usdValue };
+  if (priceIdentifier) {
+    // Find the price in the map, default to 0
+    usdPrice = pricesMap[priceIdentifier.key] || 0;
+  }
+
+  // Ensure amount is parsed as a float
+  const amount = parseFloat(subAsset.amount) || 0;
+
+  usdValue = amount * usdPrice;
+
+  return { usdPrice, usdValue };
 }
-
 
 /**
  * 辅助函数：根据合约地址和价格映射表计算单个 sub-asset 的 USD 价值 (用于兼容旧逻辑)。
@@ -112,7 +118,7 @@ export function getAssetPriceAndValue(subAsset, pricesMap) {
  * @returns {number} USD value.
  */
 export function calculateSubAssetValue(subAsset, pricesMap) {
-    // 内部调用新函数，保持对外接口一致
-    const { usdValue } = getAssetPriceAndValue(subAsset, pricesMap);
-    return usdValue;
+  // 内部调用新函数，保持对外接口一致
+  const { usdValue } = getAssetPriceAndValue(subAsset, pricesMap);
+  return usdValue;
 }

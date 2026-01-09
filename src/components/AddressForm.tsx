@@ -1,16 +1,16 @@
 // src/components/AddressForm.tsx
-'use client';
+"use client";
 
-import React from 'react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import React from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 interface AddressFormProps {
   onSearch: (address: string) => void;
 }
 
 const AddressForm: React.FC<AddressFormProps> = ({ onSearch }) => {
-  const [address, setAddress] = React.useState('');
+  const [address, setAddress] = React.useState("");
 
   const handleSearch = () => {
     if (address) {

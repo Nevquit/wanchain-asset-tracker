@@ -33,6 +33,7 @@ cd wanchain-asset-tracker
 ### 3. Install Dependencies
 
 Install all the required packages using npm:
+
 ```bash
 npm install
 ```
@@ -42,6 +43,7 @@ npm install
 The application requires API keys and RPC URLs to fetch on-chain data.
 
 1.  Create a local environment file by copying the example file:
+
     ```bash
     cp .env.example .env.local
     ```
@@ -68,6 +70,7 @@ The application requires API keys and RPC URLs to fetch on-chain data.
 ### 5. Run the Development Server
 
 Start the Next.js development server:
+
 ```bash
 npm run dev
 ```
@@ -80,15 +83,15 @@ The application will be available at [http://localhost:3000](http://localhost:30
 
 The project follows a feature-centric structure within the `/src` directory.
 
--   `/src/app`: Contains the Next.js App Router pages and API routes.
-    -   `/src/app/page.tsx`: The main page of the application.
-    -   `/src/app/api/assets/route.ts`: The backend API endpoint for fetching assets.
--   `/src/components`: Reusable React components used throughout the application (e.g., `AssetCard`, `Sidebar`).
--   `/src/services`: Core backend logic for fetching data from different protocols.
-    -   `/src/services/orchestrator.js`: The central module that dynamically discovers and runs all protocol scripts.
-    -   `/src/services/protocols/`: **This is the modular heart of the backend.** Each file in this directory represents a different protocol.
--   `/src/config`: Shared configuration, such as RPC providers and ABIs.
--   `/src/utils`: Reusable helper functions and data models.
+- `/src/app`: Contains the Next.js App Router pages and API routes.
+  - `/src/app/page.tsx`: The main page of the application.
+  - `/src/app/api/assets/route.ts`: The backend API endpoint for fetching assets.
+- `/src/components`: Reusable React components used throughout the application (e.g., `AssetCard`, `Sidebar`).
+- `/src/services`: Core backend logic for fetching data from different protocols.
+  - `/src/services/orchestrator.js`: The central module that dynamically discovers and runs all protocol scripts.
+  - `/src/services/protocols/`: **This is the modular heart of the backend.** Each file in this directory represents a different protocol.
+- `/src/config`: Shared configuration, such as RPC providers and ABIs.
+- `/src/utils`: Reusable helper functions and data models.
 
 ### How to Add a New Protocol (Modular Extensibility)
 
