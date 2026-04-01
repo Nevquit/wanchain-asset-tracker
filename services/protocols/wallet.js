@@ -1,7 +1,7 @@
 // services/protocols/wallet.js
 
-import { ethers, Contract } from 'ethers';
-import { PROVIDER, ERC20_ABI } from '../../config/shared.js';
+import { Contract } from 'ethers';
+import { getProvider, ERC20_ABI } from '../../config/shared.js';
 import { formatUnits } from '../../utils/helpers.js';
 import { createAssetData } from '../../utils/assetModel.js';
 
@@ -22,9 +22,10 @@ const WALLET_TOKENS = {
 export async function getWalletAssets(address) {
     let walletAssets = [];
     const wanscanUrl = `${WANSCAN_URL_BASE}${address}`;
+    const provider = getProvider();
     // 1. 查询原生 WAN 余额
     try {
-        const wanBalance = await PROVIDER.getBalance(address);
+        const wanBalance = await provider.getBalance(address);
         if (wanBalance > 0n) {
             walletAssets.push(
                 createAssetData({
@@ -59,8 +60,9 @@ export async function getWalletAssets(address) {
  */
 async function fetchTokenBalance(symbol, contractAddr, userAddr) {
     try {
+        const provider = getProvider();
         // 使用 Contract 类创建合约实例
-        const contract = new Contract(contractAddr, ERC20_ABI, PROVIDER);
+        const contract = new Contract(contractAddr, ERC20_ABI, provider);
         const bal = await contract.balanceOf(userAddr);
         const wanscanUrl = `${WANSCAN_URL_BASE}${userAddr}#tokenBalance`;
         if (bal > 0n) {

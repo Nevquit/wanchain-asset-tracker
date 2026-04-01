@@ -1,5 +1,5 @@
-import { ethers, Contract } from 'ethers'; 
-import { PROVIDER } from '../../config/shared.js'; 
+import { Contract, isAddress, ZeroAddress } from 'ethers';
+import { getProvider } from '../../config/shared.js';
 import { formatUnits } from '../../utils/helpers.js'; 
 import { createAssetData } from '../../utils/assetModel.js'; 
 
@@ -194,7 +194,8 @@ async function getTokenInfo(tokenAddr) {
 
     try {
         // 使用新定义的 ERC20_ABI
-        const contract = new Contract(tokenAddr, ERC20_ABI, PROVIDER);
+        const provider = getProvider();
+        const contract = new Contract(tokenAddr, ERC20_ABI, provider);
         const [symbol, decimals] = await Promise.all([
             contract.symbol(),
             contract.decimals()
@@ -215,14 +216,15 @@ async function getTokenInfo(tokenAddr) {
 export async function getXFLowsAssets(userAddr) {
     const results = [];
     
-    if (!ethers.isAddress(userAddr)) {
+    if (!isAddress(userAddr)) {
         console.error("[ERROR] Invalid user address provided.");
         return results;
     }
 
     try {
-        const pmContract = new Contract(POSITION_MANAGER_ADDR, POSITION_MANAGER_ABI, PROVIDER);
-        const factoryContract = new Contract(FACTORY_ADDR, FACTORY_ABI, PROVIDER);
+        const provider = getProvider();
+        const pmContract = new Contract(POSITION_MANAGER_ADDR, POSITION_MANAGER_ABI, provider);
+        const factoryContract = new Contract(FACTORY_ADDR, FACTORY_ABI, provider);
 
         // 1. 查询用户持有的 V3 LP NFT 数量
         const balance = await pmContract.balanceOf(userAddr);
@@ -256,7 +258,7 @@ export async function getXFLowsAssets(userAddr) {
             const liquidityAmount = liquidity.toString();
             
             // 如果流动性和已记录的费用都为 0，则跳过
-            if (liquidityAmount === '0' && tokensOwed0.toString() === '0' && tokensOwed1.toString() === '0') {
+            if (liquidity === 0n && tokensOwed0 === 0n && tokensOwed1 === 0n) {
                 continue;
             }
 
@@ -282,8 +284,8 @@ export async function getXFLowsAssets(userAddr) {
                 // 1. 获取 Pool 地址
                 const poolAddress = await factoryContract.getPool(token0_ca, token1_ca, Number(fee));
                 
-                if (poolAddress && poolAddress !== ethers.ZeroAddress) {
-                    const poolContract = new Contract(poolAddress, POOL_ABI, PROVIDER);
+                if (poolAddress && poolAddress !== ZeroAddress) {
+                    const poolContract = new Contract(poolAddress, POOL_ABI, provider);
                     
                     // 2. 批量获取 Pool 实时数据
                     const [

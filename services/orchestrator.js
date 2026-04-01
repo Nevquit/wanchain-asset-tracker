@@ -20,7 +20,7 @@ const ASSET_FETCHERS = [
 /**
  * 运行所有协议的资产获取器，并聚合结果。
  * @param {string} address - 用户地址
- * @returns {Promise<AssetData[]>} 聚合后的资产数据数组
+ * @returns {Promise<{assets: any[], failedProtocols: string[]}>} - 一个包含资产列表和失败协议名称列表的对象
  */
 export async function fetchAllAssets(address) {
     let allAssets = [];

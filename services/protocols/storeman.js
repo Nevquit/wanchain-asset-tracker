@@ -1,7 +1,7 @@
 // services/protocols/storeman.js
 // 修正版本：所有资产都使用统一的 DappName "Storeman"
 
-import { ethers } from 'ethers';
+import { toBigInt } from 'ethers';
 import IWAN from 'iwan-sdk';
 import { IWAN_CONFIG } from '../../config/shared.js';
 import { formatUnits } from '../../utils/helpers.js';
@@ -18,6 +18,8 @@ const WAN_ASSET_CA = "0x0000000000000000000000000000000000000000";
  * @returns {IWAN}
  */
 function initializeApiClient() {
+    // DIAGNOSTIC: Log the API key to check if env vars are loaded.
+    console.log(`[DIAGNOSTIC] Initializing Storeman with API Key: ${IWAN_CONFIG.API_KEY}`);
     return new IWAN(
         IWAN_CONFIG.API_KEY, 
         IWAN_CONFIG.SECRET_KEY, 
@@ -40,10 +42,10 @@ function accumulateStoremanValues(records) {
     if (Array.isArray(records)) {
         for (const record of records) {
             if (record.deposit && record.deposit !== '0') {
-                deposit += ethers.toBigInt(record.deposit);
+                deposit += toBigInt(record.deposit);
             }
             if (record.incentive && record.incentive !== '0') {
-                incentive += ethers.toBigInt(record.incentive);
+                incentive += toBigInt(record.incentive);
             }
         }
     }
